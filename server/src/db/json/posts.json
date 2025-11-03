@@ -1,0 +1,72 @@
+[
+  {
+    "id": "1",
+    "title": "Alice's First Post",
+    "body": "This is the first post by Alice.",
+    "created_at": "2023-01-01T00:00:00Z",
+    "user_id": "1"
+  },
+  {
+    "id": "2",
+    "title": "Alice's Second Post",
+    "body": "This is the second post by Alice.",
+    "created_at": "2023-01-02T00:00:00Z",
+    "user_id": "1"
+  },
+  {
+    "id": "3",
+    "title": "Bob's First Post",
+    "body": "This is the first post by Bob.",
+    "created_at": "2023-01-03T00:00:00Z",
+    "user_id": "2"
+  },
+  {
+    "id": "4",
+    "title": "Bob's Second Post",
+    "body": "This is the second post by Bob.",
+    "created_at": "2023-01-04T00:00:00Z",
+    "user_id": "2"
+  },
+  {
+    "id": "5",
+    "title": "Charlie's First Post",
+    "body": "This is the first post by Charlie.",
+    "created_at": "2023-01-05T00:00:00Z",
+    "user_id": "3"
+  },
+  {
+    "id": "6",
+    "title": "Charlie's Second Post",
+    "body": "This is the second post by Charlie.",
+    "created_at": "2023-01-06T00:00:00Z",
+    "user_id": "3"
+  },
+  {
+    "id": "7",
+    "title": "David's First Post",
+    "body": "This is the first post by David.",
+    "created_at": "2023-01-07T00:00:00Z",
+    "user_id": "4"
+  },
+  {
+    "id": "8",
+    "title": "David's Second Post",
+    "body": "This is the second post by David.",
+    "created_at": "2023-01-08T00:00:00Z",
+    "user_id": "4"
+  },
+  {
+    "id": "9",
+    "title": "Eve's First Post",
+    "body": "This is the first post by Eve.",
+    "created_at": "2023-01-09T00:00:00Z",
+    "user_id": "5"
+  },
+  {
+    "id": "10",
+    "title": "Eve's Second Post",
+    "body": "This is the second post by Eve.",
+    "created_at": "2023-01-10T00:00:00Z",
+    "user_id": "5"
+  }
+]

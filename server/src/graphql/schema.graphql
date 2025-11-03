@@ -1,0 +1,28 @@
+type Query {
+  users: [User!]!
+  posts: [Post!]!
+  comments: [Comment!]!
+  user(id: ID!): User
+  post(id: ID!): Post
+  comment(id: ID!): Comment
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type Post {
+  id: ID!
+  user_id: ID!
+  title: String
+  body: String
+}
+
+type Comment {
+  id: ID!
+  post_id: ID!
+  user_id: ID!
+  body: String
+}
