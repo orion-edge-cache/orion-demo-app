@@ -46,39 +46,49 @@ function App() {
 
   if (selectedUser) {
     return (
-      <div className="p-5 font-sans">
-        <button onClick={handleBack} className="mb-5 px-4 py-2 bg-blue-500 text-white border-none rounded">
-          Back to Users
-        </button>
-        <h1 className="text-2xl font-bold">{selectedUser.name}</h1>
-        <p className="text-gray-600">Email: {selectedUser.email}</p>
-        <h2 className="text-xl font-semibold mt-4">Posts</h2>
-        {posts.map(post => (
-          <div key={post.id} className="border border-gray-300 p-4 mb-4 rounded">
-            <h3 className="text-lg font-medium">{post.title}</h3>
-            <p className="text-gray-700">{post.body}</p>
-            <h4 className="text-md font-medium mt-2">Comments</h4>
-            {comments.filter(comment => comment.post_id === post.id).map(comment => (
-              <div key={comment.id} className="bg-gray-800 p-2 mb-2 rounded">
-                {comment.body}
-              </div>
-            ))}
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
+        <div className="max-w-4xl mx-auto">
+          <button onClick={handleBack} className="mb-8 px-6 py-2 bg-indigo-600 text-white border-none rounded-lg hover:bg-indigo-700 transition-colors font-medium text-sm">
+            ← Back to Users
+          </button>
+          <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <h1 className="text-4xl font-bold text-slate-900 mb-2">{selectedUser.name}</h1>
+            <p className="text-slate-500 text-lg">Email: {selectedUser.email}</p>
           </div>
-        ))}
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">Posts</h2>
+          {posts.map(post => (
+            <div key={post.id} className="bg-white rounded-xl shadow-md p-6 mb-6 hover:shadow-lg transition-shadow">
+              <h3 className="text-xl font-bold text-slate-900 mb-3">{post.title}</h3>
+              <p className="text-slate-600 mb-6 leading-relaxed">{post.body}</p>
+              <h4 className="text-sm font-semibold text-slate-700 uppercase tracking-wide mb-4">Comments ({comments.filter(comment => comment.post_id === post.id).length})</h4>
+              {comments.filter(comment => comment.post_id === post.id).map(comment => (
+                <div key={comment.id} className="bg-slate-50 p-4 mb-3 rounded-lg border border-slate-200">
+                  <p className="text-slate-700">{comment.body}</p>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="p-5 font-sans">
-      <h1 className="text-2xl font-bold mb-5">Users</h1>
-      <ul className="list-none p-0">
-        {users.map(user => (
-          <li key={user.id} onClick={() => handleUserClick(user)} className="cursor-pointer p-2 border border-gray-300 mb-1 rounded bg-gray-700 hover:bg-gray-200">
-            {user.name}
-          </li>
-        ))}
-      </ul>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="mb-10">
+          <h1 className="text-4xl font-bold text-slate-900">Users</h1>
+          <p className="text-slate-500 mt-2">Select a user to view their posts and comments</p>
+        </div>
+        <div className="grid gap-3">
+          {users.map(user => (
+            <button key={user.id} onClick={() => handleUserClick(user)} className="text-left bg-white p-6 rounded-xl shadow-md hover:shadow-lg hover:bg-indigo-50 transition-all border border-slate-200 hover:border-indigo-300">
+              <h3 className="text-lg font-semibold text-slate-900">{user.name}</h3>
+              <p className="text-slate-500 text-sm mt-1">{user.email}</p>
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

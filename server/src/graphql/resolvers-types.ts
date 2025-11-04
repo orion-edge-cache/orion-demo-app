@@ -24,6 +24,77 @@ export type Comment = {
   user_id: Scalars['ID']['output'];
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  createComment?: Maybe<Comment>;
+  createPost?: Maybe<Post>;
+  createUser?: Maybe<User>;
+  deleteComment?: Maybe<Comment>;
+  deletePost?: Maybe<Post>;
+  deleteUser?: Maybe<User>;
+  updateComment?: Maybe<Comment>;
+  updatePost?: Maybe<Post>;
+  updateUser?: Maybe<User>;
+};
+
+
+export type MutationCreateCommentArgs = {
+  body: Scalars['String']['input'];
+  post_id: Scalars['ID']['input'];
+  user_id: Scalars['ID']['input'];
+};
+
+
+export type MutationCreatePostArgs = {
+  body: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+  user_id: Scalars['ID']['input'];
+};
+
+
+export type MutationCreateUserArgs = {
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteCommentArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeletePostArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteUserArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateCommentArgs = {
+  body: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  post_id: Scalars['ID']['input'];
+  user_id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdatePostArgs = {
+  body: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  title: Scalars['String']['input'];
+  user_id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateUserArgs = {
+  email: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+};
+
 export type Post = {
   __typename?: 'Post';
   body?: Maybe<Scalars['String']['output']>;
@@ -140,6 +211,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Comment: ResolverTypeWrapper<Comment>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
+  Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Post: ResolverTypeWrapper<Post>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -151,6 +223,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Comment: Comment;
   ID: Scalars['ID']['output'];
+  Mutation: Record<PropertyKey, never>;
   Post: Post;
   Query: Record<PropertyKey, never>;
   String: Scalars['String']['output'];
@@ -162,6 +235,18 @@ export type CommentResolvers<ContextType = any, ParentType extends ResolversPare
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   post_id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   user_id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+};
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<MutationCreateCommentArgs, 'body' | 'post_id' | 'user_id'>>;
+  createPost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'body' | 'title' | 'user_id'>>;
+  createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'email' | 'name'>>;
+  deleteComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, 'id'>>;
+  deletePost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationDeletePostArgs, 'id'>>;
+  deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
+  updateComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<MutationUpdateCommentArgs, 'body' | 'id' | 'post_id' | 'user_id'>>;
+  updatePost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationUpdatePostArgs, 'body' | 'id' | 'title' | 'user_id'>>;
+  updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'email' | 'id' | 'name'>>;
 };
 
 export type PostResolvers<ContextType = any, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = {
@@ -188,6 +273,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type Resolvers<ContextType = any> = {
   Comment?: CommentResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;

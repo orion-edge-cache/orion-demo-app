@@ -22,6 +22,13 @@ const yoga = createYoga({
   ]
 })
 
+const dbJsonPath = path.join(__dirname, 'db/json/db.json')
+const router = jsonServer.router(dbJsonPath)
+const middlewares = jsonServer.defaults()
+
+app.use('/api', middlewares)
+app.use('/api', router)
+
 app.use(express.json())
 app.use(cors())
 
@@ -34,12 +41,6 @@ app.use('/', (req, res, next) => {
   next()
 })
 
-const dbJsonPath = path.join(__dirname, 'db/json/db.json')
-const router = jsonServer.router(dbJsonPath)
-const middlewares = jsonServer.defaults()
-
-app.use('/api', middlewares)
-app.use('/api', router)
 app.use('/graphql', yoga)
 
 app.get('/', (req, res) => {

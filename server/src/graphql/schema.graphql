@@ -7,6 +7,18 @@ type Query {
   comment(id: ID!): Comment
 }
 
+type Mutation {
+  createUser(name: String!, email: String!): User
+  createPost(title: String!, user_id: ID!, body: String!): Post
+  createComment(post_id: ID!, user_id: ID!, body: String!): Comment
+  updateUser(id: ID!, name: String!, email: String!): User
+  updatePost(id: ID!, title: String!, user_id: ID!, body: String!): Post
+  updateComment(id: ID!, post_id: ID!, user_id: ID!, body: String!): Comment
+  deleteUser(id: ID!): User
+  deletePost(id: ID!): Post
+  deleteComment(id: ID!): Comment
+}
+
 type User {
   id: ID!
   name: String!
