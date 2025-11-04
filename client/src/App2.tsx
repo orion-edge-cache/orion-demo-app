@@ -1,36 +1,64 @@
+import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { useAppContext } from './context/AppContext'
 import './App.css'
-import type { User } from './types/index'
+import type { User, Post, Comment } from './types/types'
 
 function App() {
-  const {
-    users,
-    posts,
-    comments,
-    selectedUser,
-    setSelectedUser,
-    selectedPost,
-    setSelectedPost,
-    showUserForm,
-    setShowUserForm,
-    showPostForm,
-    setShowPostForm,
-    showCommentForm,
-    setShowCommentForm,
-    editingUser,
-    setEditingUser,
-    editingPost,
-    setEditingPost,
-    editingComment,
-    setEditingComment,
-    handleBack,
-    handleReset,
-    refetchData
-  } = useAppContext()
+  const [users, setUsers] = useState<User[]>([])
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+  const [posts, setPosts] = useState<Post[]>([])
+  const [comments, setComments] = useState<Comment[]>([])
+  const [showUserForm, setShowUserForm] = useState(false)
+  const [showPostForm, setShowPostForm] = useState(false)
+  const [showCommentForm, setShowCommentForm] = useState(false)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [editingPost, setEditingPost] = useState<Post | null>(null)
+  const [editingComment, setEditingComment] = useState<Comment | null>(null)
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null)
 
-  const handleUserClick = (user: User) => {
+  const fetchUsers = async () => {
+    const res = await axios.post('http://localhost:3000/graphql', {
+      query: 'query {users {id name email}}'
+    })
+    const { data } = res.data
+    setUsers(data.users)
+  }
+
+  const fetchPostsAndComments = async (userId: string) => {
+    const postsRes = await axios.post('http://localhost:3000/graphql', {
+      query: 'query {posts {id title body user_id}}'
+    })
+    const { data: postsData } = postsRes.data
+    const userPosts = postsData.posts.filter((post: Post) => post.user_id === userId)
+    setPosts(userPosts)
+
+    const commentsRes = await axios.post('http://localhost:3000/graphql', {
+      query: 'query {comments {id body user_id post_id}}'
+    })
+    const { data: commentsData } = commentsRes.data
+    setComments(commentsData.comments)
+  }
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
+
+  const handleUserClick = async (user: User) => {
     setSelectedUser(user)
+    await fetchPostsAndComments(user.id)
+  }
+
+  const handleBack = () => {
+    setSelectedUser(null)
+    setPosts([])
+    setComments([])
+    setShowUserForm(false)
+    setShowPostForm(false)
+    setShowCommentForm(false)
+    setEditingUser(null)
+    setEditingPost(null)
+    setEditingComment(null)
+    setSelectedPost(null)
   }
 
   const handleAddUser = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -50,7 +78,7 @@ function App() {
       })
     }
     setShowUserForm(false)
-    await refetchData()
+    await fetchUsers()
     if (selectedUser) {
       setSelectedUser(null)
     }
@@ -74,7 +102,7 @@ function App() {
       })
     }
     setShowPostForm(false)
-    await refetchData()
+    await fetchPostsAndComments(selectedUser.id)
   }
 
   const handleAddComment = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -94,7 +122,7 @@ function App() {
       })
     }
     setShowCommentForm(false)
-    await refetchData()
+    await fetchPostsAndComments(selectedUser.id)
   }
 
   const handleDeleteUser = async (userId: string) => {
@@ -102,7 +130,7 @@ function App() {
       await axios.post('http://localhost:3000/graphql', {
         query: `mutation { deleteUser(id: "${userId}") { id } }`
       })
-      await refetchData()
+      await fetchUsers()
       if (selectedUser?.id === userId) {
         handleBack()
       }
@@ -114,7 +142,9 @@ function App() {
       await axios.post('http://localhost:3000/graphql', {
         query: `mutation { deletePost(id: "${postId}") { id } }`
       })
-      await refetchData()
+      if (selectedUser) {
+        await fetchPostsAndComments(selectedUser.id)
+      }
     }
   }
 
@@ -123,11 +153,24 @@ function App() {
       await axios.post('http://localhost:3000/graphql', {
         query: `mutation { deleteComment(id: "${commentId}") { id } }`
       })
-      await refetchData()
+      if (selectedUser) {
+        await fetchPostsAndComments(selectedUser.id)
+      }
     }
   }
 
-
+  const handleReset = async () => {
+    if (window.confirm('Are you sure you want to reset the database to its initial state?')) {
+      try {
+        await axios.post('http://localhost:3000/reset')
+        await fetchUsers()
+        handleBack()
+        alert('Database reset successfully!')
+      } catch (error) {
+        alert('Failed to reset database')
+      }
+    }
+  }
 
   if (selectedUser && selectedPost) {
     const postComments = comments.filter(comment => comment.post_id === selectedPost.id)
@@ -213,23 +256,6 @@ function App() {
               Delete User
             </button>
           </div>
-          {showUserForm && (
-            <div className="mb-8 bg-slate-800 p-6 rounded-lg border border-slate-700">
-              <h3 className="text-lg font-bold text-white mb-4">{editingUser ? 'Edit User' : 'Add User'}</h3>
-              <form onSubmit={handleAddUser} className="space-y-4">
-                <input type="text" name="name" placeholder="Name..." defaultValue={editingUser?.name || ''} className="w-full p-3 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-500" required />
-                <input type="email" name="email" placeholder="Email..." defaultValue={editingUser?.email || ''} className="w-full p-3 bg-slate-700 border border-slate-600 rounded text-white placeholder-slate-500" required />
-                <div className="flex gap-2">
-                  <button type="submit" className="px-4 py-2 bg-green-600 text-white border-none rounded-lg hover:bg-green-500 transition-colors font-medium text-sm">
-                    {editingUser ? 'Update' : 'Add'} User
-                  </button>
-                  <button type="button" onClick={() => { setShowUserForm(false); setEditingUser(null) }} className="px-4 py-2 bg-slate-600 text-white border-none rounded-lg hover:bg-slate-500 transition-colors font-medium text-sm">
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
           <div className="bg-slate-800 rounded-xl shadow-2xl p-8 mb-8 border border-slate-700">
             <h1 className="text-4xl font-bold text-white mb-2">{selectedUser.name}</h1>
             <p className="text-slate-400 text-lg">Email: {selectedUser.email}</p>
