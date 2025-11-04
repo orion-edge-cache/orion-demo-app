@@ -1,12 +1,15 @@
 import axios from 'axios'
 
-const API_BASE_URL = 'http://localhost:3000'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 
 // GraphQL helper
 const graphqlRequest = async (query: string) => {
+  console.log('GRAPHQL REQUEST')
   try {
     const response = await axios.post(`${API_BASE_URL}/graphql`, { query })
-    return response.data.data
+    console.log(response.data)
+
+    return response.data
   } catch (error) {
     console.error('GraphQL request failed:', error)
     throw error

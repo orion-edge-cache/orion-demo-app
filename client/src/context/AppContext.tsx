@@ -2,6 +2,8 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios'
 import type { User, Post, Comment } from '../types'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+
 interface AppContextType {
   users: User[]
   posts: Post[]
@@ -45,17 +47,18 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const refetchData = async () => {
     try {
       const [usersRes, postsRes, commentsRes] = await Promise.all([
-        axios.post('http://localhost:3000/graphql', {
+        axios.post(`${API_BASE_URL}/graphql`, {
           query: 'query {users {id name email}}'
         }),
-        axios.post('http://localhost:3000/graphql', {
+        axios.post(`${API_BASE_URL}/graphql`, {
           query: 'query {posts {id title body user_id}}'
         }),
-        axios.post('http://localhost:3000/graphql', {
+        axios.post(`${API_BASE_URL}/graphql`, {
           query: 'query {comments {id body user_id post_id}}'
         })
       ])
-      console.log(usersRes.data.data.users)
+      console.log('USER DATA')
+      console.log(usersRes.data)
 
       setUsers(usersRes.data.data.users)
       setPosts(postsRes.data.data.posts)
