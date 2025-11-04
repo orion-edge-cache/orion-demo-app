@@ -11,22 +11,27 @@ export const resolvers: Resolvers = {
       return res.data
     },
     posts: async () => {
+      await new Promise(resolve => setTimeout(resolve, 500))
       const res = await axios.get(`${baseApiUrl}/posts`)
       return res.data
     },
     comments: async () => {
+      await new Promise(resolve => setTimeout(resolve, 500))
       const res = await axios.get(`${baseApiUrl}/comments`)
       return res.data
     },
     user: async (_: any, { id }: { id: string }) => {
+      await new Promise(resolve => setTimeout(resolve, 500))
       const res = await axios.get(`${baseApiUrl}/users/${id}`)
       return res.data
     },
     post: async (_: any, { id }: { id: string }) => {
+      await new Promise(resolve => setTimeout(resolve, 500))
       const res = await axios.get(`${baseApiUrl}/posts/${id}`)
       return res.data
     },
     comment: async (_: any, { id }: { id: string }) => {
+      await new Promise(resolve => setTimeout(resolve, 500))
       const res = await axios.get(`${baseApiUrl}/comments/${id}`)
       return res.data
     }
