@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import jsonServer from 'json-server'
+import path from 'path'
 import { createYoga } from 'graphql-yoga'
 import { schema } from './graphql/schema'
 
@@ -11,7 +12,7 @@ const yoga = createYoga({
   schema,
   plugins: [
     {
-      onExecute: ({ args }) => {
+      onExecute: ({ args }: { args: any }) => {
         console.log('GraphQL Execute:', args.operationName, args.variables)
       },
       onResultProcess: ({ result }) => {
@@ -33,7 +34,8 @@ app.use('/', (req, res, next) => {
   next()
 })
 
-const router = jsonServer.router('src/db/json/db.json')
+const dbJsonPath = path.join(__dirname, 'db/json/db.json')
+const router = jsonServer.router(dbJsonPath)
 const middlewares = jsonServer.defaults()
 
 app.use('/api', middlewares)
