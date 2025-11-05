@@ -62,6 +62,11 @@ app.post('/reset', (req, res) => {
 })
 
 app.use('/graphql', yoga)
+app.use('/graphql', (req, res, next) => {
+  res.setHeader('Cache-Control', 'public, max-age=300');
+  next();
+});
+
 
 app.get('/', (req, res) => {
   res.send('hello')
