@@ -2,7 +2,9 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios'
 import type { User, Post, Comment } from '../types'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+const API_BASE_URL = import.meta.env.VITE_AWS_BASE_URL ||
+  import.meta.env.VITE_API_BASE_URL ||
+  'http://localhost:3000'
 
 interface AppContextType {
   users: User[]

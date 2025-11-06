@@ -3,7 +3,9 @@ import { useAppContext } from './context/AppContext'
 import './App.css'
 import type { User } from './types/index'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+const API_BASE_URL = import.meta.env.VITE_AWS_BASE_URL ||
+  import.meta.env.VITE_API_BASE_URL ||
+  'http://localhost:3000'
 
 function App() {
   const {

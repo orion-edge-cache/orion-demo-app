@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "rsync": "rsync -avz -e ssh dist/ GraphQL:/var/www/graphQLAws/"
+    "rsync": "rsync -av --delete -e ssh dist/ GraphQL:/var/www/graphQLAws/"
   },
   "dependencies": {
     "axios": "^1.13.1",
