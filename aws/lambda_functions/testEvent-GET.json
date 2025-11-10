@@ -1,0 +1,105 @@
+{
+  "Records": [
+    {
+      "cf": {
+        "config": {
+          "distributionDomainName": "dixw5rir038vz.cloudfront.net",
+          "distributionId": "E1ZAOXU9QPEU6R",
+          "eventType": "origin-request",
+          "requestId": "xnJGuwnFJz58Pq3WjoEHfYN_cqg5yIT7uIW9uNcETCVw6UERwDmrfA=="
+        },
+        "request": {
+          "body": {
+            "action": "read-only",
+            "data": "",
+            "encoding": "base64",
+            "inputTruncated": false
+          },
+          "clientIp": "24.176.75.47",
+          "headers": {
+            "x-forwarded-for": [
+              {
+                "key": "X-Forwarded-For",
+                "value": "24.176.75.47"
+              }
+            ],
+            "user-agent": [
+              {
+                "key": "User-Agent",
+                "value": "Amazon CloudFront"
+              }
+            ],
+            "via": [
+              {
+                "key": "Via",
+                "value": "1.1 fb1853bb8175d79c872ba2b16171e374.cloudfront.net (CloudFront)"
+              }
+            ],
+            "accept-encoding": [
+              {
+                "key": "Accept-Encoding",
+                "value": "br,gzip"
+              }
+            ],
+            "payload0": [
+              {
+                "key": "Payload0",
+                "value": "ewogICAgInF1ZXJ5IjogInF1ZXJ5IEdldFVzZXJzIHt1c2VycyB7aWQgbmFtZSBlbWFpbH19Igp9"
+              }
+            ],
+            "payload1": [
+              {
+                "key": "Payload1",
+                "value": ""
+              }
+            ],
+            "payload2": [
+              {
+                "key": "Payload2",
+                "value": ""
+              }
+            ],
+            "payload3": [
+              {
+                "key": "Payload3",
+                "value": ""
+              }
+            ],
+            "payload4": [
+              {
+                "key": "Payload4",
+                "value": ""
+              }
+            ],
+            "host": [
+              {
+                "key": "Host",
+                "value": "ec2-54-165-253-142.compute-1.amazonaws.com"
+              }
+            ]
+          },
+          "method": "GET",
+          "origin": {
+            "custom": {
+              "customHeaders": {},
+              "domainName": "ec2-54-165-253-142.compute-1.amazonaws.com",
+              "keepaliveTimeout": 5,
+              "path": "",
+              "port": 80,
+              "protocol": "http",
+              "readTimeout": 30,
+              "sslProtocols": [
+                "TLSv1",
+                "TLSv1.1",
+                "TLSv1.2",
+                "SSLv3"
+              ]
+            }
+          },
+          "querystring": "",
+          "uri": "/graphql"
+        }
+      }
+    }
+  ]
+}

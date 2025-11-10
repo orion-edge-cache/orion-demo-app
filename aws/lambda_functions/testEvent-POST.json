@@ -1,0 +1,87 @@
+{
+  "Records": [
+    {
+      "cf": {
+        "config": {
+          "distributionDomainName": "dixw5rir038vz.cloudfront.net",
+          "distributionId": "E1ZAOXU9QPEU6R",
+          "eventType": "origin-request",
+          "requestId": "y8QzJcOZUBxovCcdGUW2g9EKGXl_MpnJ_BHW6UUFxZl3G230HC21TA=="
+        },
+        "request": {
+          "body": {
+            "action": "read-only",
+            "data": "ewogICAgInF1ZXJ5IjogInF1ZXJ5IEdldFVzZXJzIHt1c2VycyB7aWQgbmFtZSBlbWFpbH19Igp9",
+            "encoding": "base64",
+            "inputTruncated": false
+          },
+          "clientIp": "24.176.75.47",
+          "headers": {
+            "host": [
+              {
+                "key": "Host",
+                "value": "ec2-54-165-253-142.compute-1.amazonaws.com"
+              }
+            ],
+            "x-forwarded-for": [
+              {
+                "key": "X-Forwarded-For",
+                "value": "24.176.75.47"
+              }
+            ],
+            "user-agent": [
+              {
+                "key": "User-Agent",
+                "value": "Amazon CloudFront"
+              }
+            ],
+            "via": [
+              {
+                "key": "Via",
+                "value": "1.1 1417a24bd3466301d53fc52c45782324.cloudfront.net (CloudFront)"
+              }
+            ],
+            "content-length": [
+              {
+                "key": "Content-Length",
+                "value": "57"
+              }
+            ],
+            "content-type": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "accept-encoding": [
+              {
+                "key": "Accept-Encoding",
+                "value": "gzip, deflate, br"
+              }
+            ]
+          },
+          "method": "POST",
+          "origin": {
+            "custom": {
+              "customHeaders": {},
+              "domainName": "ec2-54-165-253-142.compute-1.amazonaws.com",
+              "keepaliveTimeout": 5,
+              "path": "",
+              "port": 80,
+              "protocol": "http",
+              "readTimeout": 30,
+              "sslProtocols": [
+                "TLSv1",
+                "TLSv1.1",
+                "TLSv1.2",
+                "SSLv3"
+              ]
+            }
+          },
+          "querystring": "",
+          "uri": "/graphql"
+        }
+      }
+    }
+  ]
+}

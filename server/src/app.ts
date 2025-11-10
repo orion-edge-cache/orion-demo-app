@@ -38,9 +38,11 @@ app.use(express.json())
 app.use(cors())
 
 app.use('/', (req, res, next) => {
-  console.log("\n\n===== REQUEST METHOD AND URL")
-  console.log(req.method)
-  console.log(req.url)
+  const timestamp = new Date().toISOString().slice(0, 19) + 'Z'; // Zulu format without milliseconds (e.g., 2023-10-01T12:00:00Z)
+
+  console.log(`\n[${timestamp}] ${req.method} ${req.url}`);
+  console.log("===== REQUEST HEADERS")
+  console.log(req.headers)
   console.log("===== REQUEST BODY")
   console.log(req.body)
   next()
