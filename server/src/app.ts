@@ -6,7 +6,7 @@ import { createYoga } from 'graphql-yoga'
 import { schema } from './graphql/schema'
 import { readFileSync, writeFileSync } from 'fs'
 
-export const PORT = process.env.PORT || 3000
+export const PORT = process.env.AWS_LOCALHOST_PORT || 3000
 
 export const app = express()
 const yoga = createYoga({

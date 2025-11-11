@@ -1,7 +1,9 @@
 import axios from 'axios'
 import { Resolvers } from './resolvers-types'
 
-const baseApiUrl = 'http://localhost:3000/api'
+const localhost = process.env.LOCALHOST_BASE_URL
+const port = process.env.AWS_LOCALHOST_PORT
+const baseApiUrl = `${localhost}:${port}/api`
 
 export const resolvers: Resolvers = {
   Query: {
