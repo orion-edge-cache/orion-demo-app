@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const LOCALHOST_PORT = import.meta.env.VITE_AWS_LOCALHOST_PORT
-const LOCALHOST_BASE_URL = import.meta.env.LOCALHOST_BASE_URL + LOCALHOST_PORT
+const LOCALHOST_BASE_URL = import.meta.env.VITE_LOCALHOST_BASE_URL + LOCALHOST_PORT
 
 const API_BASE_URL = import.meta.env.VITE_AWS_BASE_URL ||
   LOCALHOST_BASE_URL
