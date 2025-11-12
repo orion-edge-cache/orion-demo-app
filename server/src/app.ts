@@ -36,13 +36,12 @@ app.use(express.json())
 app.use(cors())
 
 app.use('/', (req, res, next) => {
-  const timestamp = new Date().toISOString().slice(0, 19) + 'Z'; // Zulu format without milliseconds (e.g., 2023-10-01T12:00:00Z)
-
-  console.log(`\n\x1b[1;33m[${timestamp}]\x1b[0m ${req.method} ${req.url}`);
-  console.log("\x1b[1;31mREQUEST HEADERS\x1b[0m")
-  console.log(req.headers)
-  console.log("\x1b[1;31mREQUEST BODY\x1b[0m")
-  console.log(req.body)
+  const datetime = new Date().toISOString().slice(0, -5) + 'Z'
+  console.log(`\x1b[1;33m[${datetime}] CloudFront\x1b[0m`)
+  console.log(`METHOD: ${req.method}`)
+  console.log(`URL: ${req.url}`)
+  console.log(`HEADERS: ${JSON.stringify(req.headers, null, 2)}`)
+  console.log(`BODY: ${JSON.stringify(req.body, null, 2)}`)
   next()
 })
 
