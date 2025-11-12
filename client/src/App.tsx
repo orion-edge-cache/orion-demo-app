@@ -7,7 +7,7 @@ const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_
 const CACHE_URL = window.location || import.meta.env.VITE_AWS_ORIGIN_URL || LOCALHOST
 const GRAPHQL_SERVER = `${CACHE_URL}graphql`
 
-console.log('App.tsx - AWS Cloudfront Site')
+console.log('App.tsx - Fastly Site')
 console.log('App.tsx: API BASE URL:', CACHE_URL)
 console.log(`services/api.ts - GRAPHQL_SERVER: ${GRAPHQL_SERVER}`)
 
