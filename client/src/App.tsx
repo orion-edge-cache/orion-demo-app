@@ -3,12 +3,9 @@ import { useAppContext } from './context/AppContext'
 import './App.css'
 import type { User } from './types/index'
 
-const LOCALHOST_PORT = import.meta.env.VITE_AWS_LOCALHOST_PORT
-const LOCALHOST_BASE_URL = import.meta.env.VITE_LOCALHOST_BASE_URL + LOCALHOST_PORT
-
-const API_BASE_URL = import.meta.env.VITE_AWS_SITE_BASE_URL ||
-  LOCALHOST_BASE_URL
-console.log('App.tsx: API BASE URL:', API_BASE_URL)
+const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}`
+const CACHE_URL = window.location || import.meta.env.VITE_AWS_ORIGIN_URL || LOCALHOST
+console.log('App.tsx: API BASE URL:', CACHE_URL)
 
 function App() {
   const {
@@ -47,12 +44,12 @@ function App() {
     const email = formData.get('email') as string
 
     if (editingUser) {
-      await axios.post(`${API_BASE_URL}/graphql`, {
+      await axios.post(`${CACHE_URL}/graphql`, {
         query: `mutation { updateUser(id: "${editingUser.id}", name: "${name}", email: "${email}") { id name email } }`
       })
       setEditingUser(null)
     } else {
-      await axios.post(`${API_BASE_URL}/graphql`, {
+      await axios.post(`${CACHE_URL}/graphql`, {
         query: `mutation { createUser(name: "${name}", email: "${email}") { id name email } }`
       })
     }
@@ -71,12 +68,12 @@ function App() {
     const body = formData.get('body') as string
 
     if (editingPost) {
-      await axios.post(`${API_BASE_URL}/graphql`, {
+      await axios.post(`${CACHE_URL}/graphql`, {
         query: `mutation { updatePost(id: "${editingPost.id}", title: "${title}", user_id: "${selectedUser.id}", body: "${body}") { id title body user_id } }`
       })
       setEditingPost(null)
     } else {
-      await axios.post(`${API_BASE_URL}/graphql`, {
+      await axios.post(`${CACHE_URL}/graphql`, {
         query: `mutation { createPost(title: "${title}", user_id: "${selectedUser.id}", body: "${body}") { id title body user_id } }`
       })
     }
@@ -91,12 +88,12 @@ function App() {
     const body = formData.get('body') as string
 
     if (editingComment) {
-      await axios.post(`${API_BASE_URL}/graphql`, {
+      await axios.post(`${CACHE_URL}/graphql`, {
         query: `mutation { updateComment(id: "${editingComment.id}", post_id: "${selectedPost.id}", user_id: "${selectedUser.id}", body: "${body}") { id body user_id post_id } }`
       })
       setEditingComment(null)
     } else {
-      await axios.post(`${API_BASE_URL}/graphql`, {
+      await axios.post(`${CACHE_URL}/graphql`, {
         query: `mutation { createComment(post_id: "${selectedPost.id}", user_id: "${selectedUser.id}", body: "${body}") { id body user_id post_id } }`
       })
     }
@@ -106,7 +103,7 @@ function App() {
 
   const handleDeleteUser = async (userId: string) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
-      await axios.post(`${API_BASE_URL}/graphql`, {
+      await axios.post(`${CACHE_URL}/graphql`, {
         query: `mutation { deleteUser(id: "${userId}") { id } }`
       })
       await refetchData()
@@ -118,7 +115,7 @@ function App() {
 
   const handleDeletePost = async (postId: string) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
-      await axios.post(`${API_BASE_URL}/graphql`, {
+      await axios.post(`${CACHE_URL}/graphql`, {
         query: `mutation { deletePost(id: "${postId}") { id } }`
       })
       await refetchData()
@@ -127,7 +124,7 @@ function App() {
 
   const handleDeleteComment = async (commentId: string) => {
     if (window.confirm('Are you sure you want to delete this comment?')) {
-      await axios.post(`${API_BASE_URL}/graphql`, {
+      await axios.post(`${CACHE_URL}/graphql`, {
         query: `mutation { deleteComment(id: "${commentId}") { id } }`
       })
       await refetchData()

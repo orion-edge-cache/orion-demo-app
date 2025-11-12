@@ -2,13 +2,10 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios'
 import type { User, Post, Comment } from '../types'
 
-const LOCALHOST_PORT = import.meta.env.VITE_AWS_LOCALHOST_PORT
-const LOCALHOST_BASE_URL = import.meta.env.VITE_LOCALHOST_BASE_URL + LOCALHOST_PORT
+const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}`
+const CACHE_URL = window.location || import.meta.env.VITE_AWS_ORIGIN_URL || LOCALHOST
 
-const API_BASE_URL = import.meta.env.VITE_AWS_SITE_BASE_URL ||
-  LOCALHOST_BASE_URL
-
-console.log('AppContext.tsx: API BASE URL:', API_BASE_URL)
+console.log('AppContext.tsx: API BASE URL:', CACHE_URL)
 
 interface AppContextType {
   users: User[]
@@ -53,13 +50,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const refetchData = async () => {
     try {
       const [usersRes, postsRes, commentsRes] = await Promise.all([
-        axios.post(`${API_BASE_URL}/graphql`, {
+        axios.post(`${CACHE_URL}/graphql`, {
           query: 'query {users {id name email}}'
         }),
-        axios.post(`${API_BASE_URL}/graphql`, {
+        axios.post(`${CACHE_URL}/graphql`, {
           query: 'query {posts {id title body user_id}}'
         }),
-        axios.post(`${API_BASE_URL}/graphql`, {
+        axios.post(`${CACHE_URL}/graphql`, {
           query: 'query {comments {id body user_id post_id}}'
         })
       ])

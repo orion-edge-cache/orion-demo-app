@@ -1,18 +1,15 @@
 import axios from 'axios'
 
-const LOCALHOST_PORT = import.meta.env.VITE_AWS_LOCALHOST_PORT
-const LOCALHOST_BASE_URL = import.meta.env.VITE_LOCALHOST_BASE_URL + LOCALHOST_PORT
+const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}`
+const CACHE_URL = window.location || import.meta.env.VITE_AWS_ORIGIN_URL || LOCALHOST
 
-const API_BASE_URL = import.meta.env.VITE_AWS_SITE_BASE_URL ||
-  LOCALHOST_BASE_URL
-
-console.log('api.ts: API BASE URL:', API_BASE_URL)
+console.log('api.ts: API BASE URL:', CACHE_URL)
 
 // GraphQL helper
 const graphqlRequest = async (query: string) => {
   console.log('GRAPHQL REQUEST')
   try {
-    const response = await axios.post(`${API_BASE_URL}/graphql`, { query })
+    const response = await axios.post(`${CACHE_URL}/graphql`, { query })
     console.log(response.data)
 
     return response.data
