@@ -47,7 +47,3 @@ app.use('/', (req, res, next) => {
 })
 
 app.use('/graphql', yoga)
-// app.use('/graphql', (req, res, next) => {
-//   res.setHeader('Cache-Control', 'public, max-age=300');
-//   next();
-// });
