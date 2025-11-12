@@ -2,15 +2,17 @@ import axios from 'axios'
 
 const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}`
 const CACHE_URL = window.location || import.meta.env.VITE_AWS_ORIGIN_URL || LOCALHOST
+const GRAPHQL_SERVER = `${CACHE_URL}graphql`
 
 console.log('api.ts.tsx - AWS Cloudfront Site')
 console.log('api.ts: API BASE URL:', CACHE_URL)
+console.log(`services/api.ts - GRAPHQL_SERVER: ${GRAPHQL_SERVER}`)
 
 // GraphQL helper
 const graphqlRequest = async (query: string) => {
   console.log('GRAPHQL REQUEST')
   try {
-    const response = await axios.post(`${CACHE_URL}/graphql`, { query })
+    const response = await axios.post(`${GRAPHQL_SERVER}`, { query })
     console.log(response.data)
 
     return response.data
