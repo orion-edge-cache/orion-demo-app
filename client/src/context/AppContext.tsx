@@ -5,6 +5,7 @@ import type { User, Post, Comment } from '../types'
 const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}`
 const CACHE_URL = window.location || import.meta.env.VITE_AWS_ORIGIN_URL || LOCALHOST
 
+console.log('context/AppContext.tsx - AWS Cloudfront Site')
 console.log('AppContext.tsx: API BASE URL:', CACHE_URL)
 
 interface AppContextType {

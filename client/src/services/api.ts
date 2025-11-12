@@ -3,6 +3,7 @@ import axios from 'axios'
 const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}`
 const CACHE_URL = window.location || import.meta.env.VITE_AWS_ORIGIN_URL || LOCALHOST
 
+console.log('api.ts.tsx - AWS Cloudfront Site')
 console.log('api.ts: API BASE URL:', CACHE_URL)
 
 // GraphQL helper

@@ -5,6 +5,8 @@ import type { User } from './types/index'
 
 const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}`
 const CACHE_URL = window.location || import.meta.env.VITE_AWS_ORIGIN_URL || LOCALHOST
+
+console.log('App.tsx - AWS Cloudfront Site')
 console.log('App.tsx: API BASE URL:', CACHE_URL)
 
 function App() {
