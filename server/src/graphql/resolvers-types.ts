@@ -24,6 +24,13 @@ export type Comment = {
   user_id: Scalars['ID']['output'];
 };
 
+export type DatabaseResetResult = {
+  __typename?: 'DatabaseResetResult';
+  comments: Array<Comment>;
+  posts: Array<Post>;
+  users: Array<User>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createComment?: Maybe<Comment>;
@@ -32,6 +39,7 @@ export type Mutation = {
   deleteComment?: Maybe<Comment>;
   deletePost?: Maybe<Post>;
   deleteUser?: Maybe<User>;
+  reset?: Maybe<DatabaseResetResult>;
   updateComment?: Maybe<Comment>;
   updatePost?: Maybe<Post>;
   updateUser?: Maybe<User>;
@@ -109,6 +117,7 @@ export type Query = {
   comments: Array<Comment>;
   post?: Maybe<Post>;
   posts: Array<Post>;
+  postsByUser: Array<Post>;
   user?: Maybe<User>;
   users: Array<User>;
 };
@@ -124,6 +133,11 @@ export type QueryPostArgs = {
 };
 
 
+export type QueryPostsByUserArgs = {
+  user_id: Scalars['ID']['input'];
+};
+
+
 export type QueryUserArgs = {
   id: Scalars['ID']['input'];
 };
@@ -133,6 +147,7 @@ export type User = {
   email: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  posts: Array<Post>;
 };
 
 
@@ -210,6 +225,7 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Comment: ResolverTypeWrapper<Comment>;
+  DatabaseResetResult: ResolverTypeWrapper<DatabaseResetResult>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Post: ResolverTypeWrapper<Post>;
@@ -222,6 +238,7 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Comment: Comment;
+  DatabaseResetResult: DatabaseResetResult;
   ID: Scalars['ID']['output'];
   Mutation: Record<PropertyKey, never>;
   Post: Post;
@@ -237,6 +254,12 @@ export type CommentResolvers<ContextType = any, ParentType extends ResolversPare
   user_id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
+export type DatabaseResetResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['DatabaseResetResult'] = ResolversParentTypes['DatabaseResetResult']> = {
+  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
+  posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>;
+  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<MutationCreateCommentArgs, 'body' | 'post_id' | 'user_id'>>;
   createPost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'body' | 'title' | 'user_id'>>;
@@ -244,6 +267,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, 'id'>>;
   deletePost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationDeletePostArgs, 'id'>>;
   deleteUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'id'>>;
+  reset?: Resolver<Maybe<ResolversTypes['DatabaseResetResult']>, ParentType, ContextType>;
   updateComment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<MutationUpdateCommentArgs, 'body' | 'id' | 'post_id' | 'user_id'>>;
   updatePost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationUpdatePostArgs, 'body' | 'id' | 'title' | 'user_id'>>;
   updateUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'email' | 'id' | 'name'>>;
@@ -261,6 +285,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType>;
   post?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<QueryPostArgs, 'id'>>;
   posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>;
+  postsByUser?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<QueryPostsByUserArgs, 'user_id'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 };
@@ -269,10 +294,12 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  posts?: Resolver<Array<ResolversTypes['Post']>, ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
   Comment?: CommentResolvers<ContextType>;
+  DatabaseResetResult?: DatabaseResetResultResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

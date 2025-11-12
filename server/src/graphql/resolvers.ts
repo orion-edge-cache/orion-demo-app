@@ -1,4 +1,6 @@
 import axios from 'axios'
+import path from 'path'
+import { readFileSync, writeFileSync } from 'fs'
 import { Resolvers } from './resolvers-types'
 
 const localhost = process.env.LOCALHOST_BASE_URL
@@ -36,6 +38,19 @@ export const resolvers: Resolvers = {
       await new Promise(resolve => setTimeout(resolve, 500))
       const res = await axios.get(`${baseApiUrl}/comments/${id}`)
       return res.data
+    },
+    postsByUser: async (_: any, { user_id }: { user_id: string }) => {
+      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate delay
+      const res = await axios.get(`${baseApiUrl}/posts?user_id=${user_id}`);
+      return res.data;
+    },
+  },
+  User: {
+    //For User.posts (resolver on User type):
+    posts: async (parent: { id: string }) => {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const res = await axios.get(`${baseApiUrl}/posts?user_id=${parent.id}`);
+      return res.data;
     }
   },
   Mutation: {
@@ -78,8 +93,10 @@ export const resolvers: Resolvers = {
     },
     deleteUser: async (_parent, args, _context) => {
       const { id } = args
-      const res = await axios.delete(`${baseApiUrl}/users/${id}`)
-      return res.data
+      const userRes = await axios.get(`${baseApiUrl}/users/${id}`)
+      const user = userRes.data
+      await axios.delete(`${baseApiUrl}/users/${id}`)
+      return user
     },
     deletePost: async (_parent, args, _context) => {
       const { id } = args
@@ -90,6 +107,22 @@ export const resolvers: Resolvers = {
       const { id } = args
       const res = await axios.delete(`${baseApiUrl}/comments/${id}`)
       return res.data
+    },
+    reset: async () => {
+      const dbJsonPath = path.join(__dirname, '../db/json/db.json')
+      const dbDir = path.join(__dirname, '../db/json')
+      try {
+        const users = JSON.parse(readFileSync(path.join(dbDir, 'users.json'), 'utf-8'))
+        const posts = JSON.parse(readFileSync(path.join(dbDir, 'posts.json'), 'utf-8'))
+        const comments = JSON.parse(readFileSync(path.join(dbDir, 'comments.json'), 'utf-8'))
+
+        const db = { users, posts, comments }
+        writeFileSync(dbJsonPath, JSON.stringify(db, null, 2))
+        return { users, posts, comments }
+      } catch (error) {
+        console.log('Failed to reset database', error)
+        return null
+      }
     }
   }
 }

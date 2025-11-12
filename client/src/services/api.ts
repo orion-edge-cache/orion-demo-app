@@ -63,4 +63,4 @@ export const deleteComment = (id: string) =>
 
 // Reset database
 export const resetDatabase = () =>
-  axios.post(`${API_BASE_URL}/reset`)
+  graphqlRequest(`mutation { reset { users {id name email} posts {id title body} comments {id body }}}`)
