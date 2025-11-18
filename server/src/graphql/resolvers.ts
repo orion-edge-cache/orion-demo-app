@@ -10,7 +10,6 @@ const baseApiUrl = `${localhost}:${port}/api`
 export const resolvers: Resolvers = {
   Query: {
     users: async () => {
-      console.log(baseApiUrl)
       await new Promise(resolve => setTimeout(resolve, 500))
       const res = await axios.get(`${baseApiUrl}/users`)
       return res.data
