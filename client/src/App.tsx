@@ -3,8 +3,8 @@ import { useAppContext } from './context/AppContext'
 import './App.css'
 import type { User } from './types/index'
 
-const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}`
-const CACHE_URL = window.location || import.meta.env.VITE_AWS_ORIGIN_URL || LOCALHOST
+const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}/`
+const CACHE_URL = LOCALHOST || window.location || import.meta.env.VITE_AWS_ORIGIN_URL
 const GRAPHQL_SERVER = `${CACHE_URL}graphql`
 
 console.log('App.tsx - Fastly Site')

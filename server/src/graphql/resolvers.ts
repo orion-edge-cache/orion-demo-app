@@ -3,13 +3,14 @@ import path from 'path'
 import { readFileSync, writeFileSync } from 'fs'
 import { Resolvers } from './resolvers-types'
 
-const localhost = process.env.LOCALHOST_BASE_URL
-const port = process.env.AWS_LOCALHOST_PORT
+const localhost = process.env.LOCALHOST_URL || 'http://localhost'
+const port = process.env.AWS_PORT || 3000
 const baseApiUrl = `${localhost}:${port}/api`
 
 export const resolvers: Resolvers = {
   Query: {
     users: async () => {
+      console.log(baseApiUrl)
       await new Promise(resolve => setTimeout(resolve, 500))
       const res = await axios.get(`${baseApiUrl}/users`)
       return res.data
