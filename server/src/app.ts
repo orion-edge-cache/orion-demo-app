@@ -4,9 +4,8 @@ import jsonServer from 'json-server'
 import path from 'path'
 import { createYoga } from 'graphql-yoga'
 import { schema } from './graphql/schema'
-import { readFileSync, writeFileSync } from 'fs'
 
-export const PORT = process.env.PORT || 3000
+export const PORT = process.env.AWS_LOCALHOST_PORT || 3000
 
 export const app = express()
 const yoga = createYoga({
@@ -25,7 +24,6 @@ const yoga = createYoga({
 })
 
 const dbJsonPath = path.join(__dirname, 'db/json/db.json')
-const dbDir = path.join(__dirname, 'db/json')
 const router = jsonServer.router(dbJsonPath)
 
 app.use('/api', (_req, _res, next) => {
@@ -38,36 +36,13 @@ app.use(express.json())
 app.use(cors())
 
 app.use('/', (req, res, next) => {
-  console.log("\n\n===== REQUEST METHOD AND URL")
-  console.log(req.method)
-  console.log(req.url)
-  console.log("===== REQUEST BODY")
-  console.log(req.body)
+  const datetime = new Date().toISOString().slice(0, -5) + 'Z'
+  console.log(`\x1b[1;33m[${datetime}] CloudFront\x1b[0m`)
+  console.log(`METHOD: ${req.method}`)
+  console.log(`URL: ${req.url}`)
+  console.log(`HEADERS: ${JSON.stringify(req.headers, null, 2)}`)
+  console.log(`BODY: ${JSON.stringify(req.body, null, 2)}`)
   next()
 })
 
-app.post('/reset', (req, res) => {
-  try {
-    const users = JSON.parse(readFileSync(path.join(dbDir, 'users.json'), 'utf-8'))
-    const posts = JSON.parse(readFileSync(path.join(dbDir, 'posts.json'), 'utf-8'))
-    const comments = JSON.parse(readFileSync(path.join(dbDir, 'comments.json'), 'utf-8'))
-
-    const db = { users, posts, comments }
-    writeFileSync(dbJsonPath, JSON.stringify(db, null, 2))
-
-    res.json({ success: true, message: 'Database reset successfully' })
-  } catch (error) {
-    res.status(500).json({ success: false, error: 'Failed to reset database' })
-  }
-})
-
 app.use('/graphql', yoga)
-app.use('/graphql', (req, res, next) => {
-  res.setHeader('Cache-Control', 'public, max-age=300');
-  next();
-});
-
-
-app.get('/', (req, res) => {
-  res.send('hello')
-})

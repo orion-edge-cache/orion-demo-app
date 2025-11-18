@@ -2,7 +2,13 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios'
 import type { User, Post, Comment } from '../types'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}`
+const CACHE_URL = window.location || import.meta.env.VITE_AWS_ORIGIN_URL || LOCALHOST
+const GRAPHQL_SERVER = `${CACHE_URL}graphql`
+
+console.log('context/AppContext.tsx - Fastly Site')
+console.log('AppContext.tsx: API BASE URL:', CACHE_URL)
+console.log(`services/api.ts - GRAPHQL_SERVER: ${GRAPHQL_SERVER}`)
 
 interface AppContextType {
   users: User[]
@@ -47,13 +53,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const refetchData = async () => {
     try {
       const [usersRes, postsRes, commentsRes] = await Promise.all([
-        axios.post(`${API_BASE_URL}/graphql`, {
+        axios.post(`${GRAPHQL_SERVER}`, {
           query: 'query {users {id name email}}'
         }),
-        axios.post(`${API_BASE_URL}/graphql`, {
+        axios.post(`${GRAPHQL_SERVER}`, {
           query: 'query {posts {id title body user_id}}'
         }),
-        axios.post(`${API_BASE_URL}/graphql`, {
+        axios.post(`${GRAPHQL_SERVER}`, {
           query: 'query {comments {id body user_id post_id}}'
         })
       ])

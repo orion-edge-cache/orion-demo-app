@@ -1,12 +1,18 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}`
+const CACHE_URL = window.location || import.meta.env.VITE_AWS_ORIGIN_URL || LOCALHOST
+const GRAPHQL_SERVER = `${CACHE_URL}graphql`
+
+console.log('api.ts.tsx - Fastly Site')
+console.log('api.ts: API BASE URL:', CACHE_URL)
+console.log(`services/api.ts - GRAPHQL_SERVER: ${GRAPHQL_SERVER}`)
 
 // GraphQL helper
 const graphqlRequest = async (query: string) => {
   console.log('GRAPHQL REQUEST')
   try {
-    const response = await axios.post(`${API_BASE_URL}/graphql`, { query })
+    const response = await axios.post(`${GRAPHQL_SERVER}`, { query })
     console.log(response.data)
 
     return response.data
@@ -57,4 +63,4 @@ export const deleteComment = (id: string) =>
 
 // Reset database
 export const resetDatabase = () =>
-  axios.post(`${API_BASE_URL}/reset`)
+  graphqlRequest(`mutation { reset { users {id name email} posts {id title body} comments {id body }}}`)

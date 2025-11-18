@@ -5,6 +5,7 @@ type Query {
   user(id: ID!): User
   post(id: ID!): Post
   comment(id: ID!): Comment
+  postsByUser(user_id: ID!): [Post!]!
 }
 
 type Mutation {
@@ -17,12 +18,14 @@ type Mutation {
   deleteUser(id: ID!): User
   deletePost(id: ID!): Post
   deleteComment(id: ID!): Comment
+  reset: DatabaseResetResult
 }
 
 type User {
   id: ID!
   name: String!
   email: String!
+  posts: [Post!]!
 }
 
 type Post {
@@ -37,4 +40,10 @@ type Comment {
   post_id: ID!
   user_id: ID!
   body: String
+}
+
+type DatabaseResetResult {
+  users: [User!]!
+  posts: [Post!]!
+  comments: [Comment!]!
 }
