@@ -1,16 +1,11 @@
 import axios from 'axios'
+import { CURRENT_CONFIG } from '../config/env'
 
-const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}/`
-const CACHE_URL = LOCALHOST || window.location || import.meta.env.VITE_AWS_ORIGIN_URL
-const GRAPHQL_SERVER = `${CACHE_URL}graphql`
-
-console.log('api.ts.tsx - Fastly Site')
-console.log('api.ts: API BASE URL:', CACHE_URL)
-console.log(`services/api.ts - GRAPHQL_SERVER: ${GRAPHQL_SERVER}`)
+const GRAPHQL_SERVER = CURRENT_CONFIG.graphqlUrl
 
 // GraphQL helper
 const graphqlRequest = async (query: string) => {
-  console.log('GRAPHQL REQUEST')
+  console.log(`📡 GraphQL request in ${CURRENT_CONFIG.environment} environment`)
   try {
     const response = await axios.post(`${GRAPHQL_SERVER}`, { query })
     console.log(response.data)

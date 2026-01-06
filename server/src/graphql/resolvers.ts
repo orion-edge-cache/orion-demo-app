@@ -2,10 +2,9 @@ import axios from 'axios'
 import path from 'path'
 import { readFileSync, writeFileSync } from 'fs'
 import { Resolvers } from './resolvers-types'
+import { CURRENT_CONFIG, DEPLOYMENT_ENV } from '../config'
 
-const localhost = process.env.LOCALHOST_URL || 'http://localhost'
-const port = process.env.AWS_PORT || 3000
-const baseApiUrl = `${localhost}:${port}/api`
+const baseApiUrl = CURRENT_CONFIG.apiUrl
 
 export const resolvers: Resolvers = {
   Query: {

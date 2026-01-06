@@ -1,14 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios'
+import { CURRENT_CONFIG } from '../config/env'
 import type { User, Post, Comment } from '../types'
 
-const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}/`
-const CACHE_URL = LOCALHOST || window.location || import.meta.env.VITE_AWS_ORIGIN_URL
-const GRAPHQL_SERVER = `${CACHE_URL}graphql`
-
-console.log('context/AppContext.tsx - Cloudfront')
-console.log('AppContext.tsx: API BASE URL:', CACHE_URL)
-console.log(`services/api.ts - GRAPHQL_SERVER: ${GRAPHQL_SERVER}`)
+const GRAPHQL_SERVER = CURRENT_CONFIG.graphqlUrl
 
 interface AppContextType {
   users: User[]
@@ -52,6 +47,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   const refetchData = async () => {
     try {
+      console.log(`📡 GraphQL request in ${CURRENT_CONFIG.environment} environment`)
       const [usersRes, postsRes, commentsRes] = await Promise.all([
         axios.post(`${GRAPHQL_SERVER}`, {
           query: 'query {users {id name email}}'

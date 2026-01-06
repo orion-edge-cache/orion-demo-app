@@ -1,15 +1,12 @@
 import axios from 'axios'
 import { useAppContext } from './context/AppContext'
+import { CURRENT_CONFIG, logEnvironment } from './config/env'
 import './App.css'
 import type { User } from './types/index'
 
-const LOCALHOST = `${import.meta.env.VITE_LOCALHOST_URL}:${import.meta.env.VITE_AWS_PORT}/`
-const CACHE_URL = LOCALHOST || window.location || import.meta.env.VITE_AWS_ORIGIN_URL
-const GRAPHQL_SERVER = `${CACHE_URL}graphql`
+const GRAPHQL_SERVER = CURRENT_CONFIG.graphqlUrl
 
-console.log('App.tsx - Fastly Site')
-console.log('App.tsx: API BASE URL:', CACHE_URL)
-console.log(`services/api.ts - GRAPHQL_SERVER: ${GRAPHQL_SERVER}`)
+logEnvironment()
 
 function App() {
   const {
