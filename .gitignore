@@ -13,3 +13,21 @@ coverage/
 dump/
 *.mongodb
 *.pdf
+
+# Terraform
+terraform/.terraform/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/crash.log
+terraform/*.tfvars.json
+terraform/override.tf
+terraform/override.tf.json
+
+# CLI tool
+deploy-cli/dist/
+deploy-cli/node_modules/
+
+# Build artifacts
+*.zip
+build/
+lambda-function.zip

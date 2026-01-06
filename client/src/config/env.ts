@@ -1,4 +1,4 @@
-type DeploymentEnv = 'fastly' | 'cloudfront' | 'stellate' | 'localhost'
+type DeploymentEnv = 'aws-lambda' | 'localhost'
 
 interface EnvConfig {
   graphqlUrl: string
@@ -7,7 +7,7 @@ interface EnvConfig {
 }
 
 const isValidEnv = (env: string): env is DeploymentEnv => {
-  return ['fastly', 'cloudfront', 'stellate', 'localhost'].includes(env)
+  return ['aws-lambda', 'localhost'].includes(env)
 }
 
 const getDeploymentEnv = (): DeploymentEnv => {
@@ -19,11 +19,13 @@ const getDeploymentEnv = (): DeploymentEnv => {
 
   // Priority 2: Runtime hostname detection
   const hostname = window.location.hostname
-  if (hostname.includes('vfa102.website')) return 'fastly'
-  if (hostname.includes('cloudfront') || hostname.includes('dixw5rir038vz')) return 'cloudfront'
-  if (hostname.includes('stellate') || hostname.includes('capstone.stellate.sh')) return 'stellate'
-
-  // Default to localhost if running on localhost or 127.0.0.1
+  
+  // S3 static website hosting
+  if (hostname.includes('s3-website')) {
+    return 'aws-lambda'
+  }
+  
+  // Localhost
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'localhost'
   }
@@ -37,21 +39,14 @@ const buildConfig = (): Record<DeploymentEnv, EnvConfig> => {
   const hostname = window.location.hostname
   const protocol = window.location.protocol
 
+  // API Gateway URL injected at build time by CLI
+  const apiGatewayUrl = import.meta.env.VITE_API_GATEWAY_URL || ''
+
   return {
-    fastly: {
-      graphqlUrl: 'https://vfa102.website/graphql',
-      apiUrl: 'https://vfa102.website/api',
-      environment: 'fastly'
-    },
-    cloudfront: {
-      graphqlUrl: 'https://dixw5rir038vz.cloudfront.net/graphql',
-      apiUrl: 'https://dixw5rir038vz.cloudfront.net/api',
-      environment: 'cloudfront'
-    },
-    stellate: {
-      graphqlUrl: 'https://capstone.stellate.sh/graphql',
-      apiUrl: 'https://capstone.stellate.sh/api',
-      environment: 'stellate'
+    'aws-lambda': {
+      graphqlUrl: apiGatewayUrl ? `${apiGatewayUrl}/graphql` : '',
+      apiUrl: apiGatewayUrl ? `${apiGatewayUrl}/api` : '',
+      environment: 'aws-lambda'
     },
     localhost: {
       graphqlUrl: `${protocol}//${hostname}:3002/graphql`,

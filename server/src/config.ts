@@ -1,14 +1,16 @@
-type DeploymentEnv = 'fastly' | 'cloudfront' | 'stellate' | 'localhost'
+type DeploymentEnv = 'aws-lambda' | 'localhost'
 
 interface EnvConfig {
   port: number
   corsOrigin: string
   apiUrl: string
   environment: DeploymentEnv
+  awsRegion?: string
+  s3BucketName?: string
 }
 
 const isValidEnv = (env: string): env is DeploymentEnv => {
-  return ['fastly', 'cloudfront', 'stellate', 'localhost'].includes(env)
+  return ['aws-lambda', 'localhost'].includes(env)
 }
 
 const getDeploymentEnv = (): DeploymentEnv => {
@@ -21,7 +23,7 @@ const getDeploymentEnv = (): DeploymentEnv => {
   // Priority 2: NODE_ENV mapping (fallback)
   const nodeEnv = process.env.NODE_ENV
   if (nodeEnv === 'production') {
-    return 'fastly'
+    return 'aws-lambda'
   }
 
   // Default to localhost
@@ -30,29 +32,19 @@ const getDeploymentEnv = (): DeploymentEnv => {
 
 // Build config from environment variables with defaults
 const buildConfig = (): Record<DeploymentEnv, EnvConfig> => ({
-  fastly: {
-    port: parseInt(process.env.FASTLY_PORT || '3002', 10),
-    corsOrigin: process.env.FASTLY_ORIGIN_URL || 'https://vfa102.website',
-    apiUrl: `${process.env.FASTLY_ORIGIN_URL || 'https://vfa102.website'}/api`,
-    environment: 'fastly'
-  },
-  cloudfront: {
-    port: parseInt(process.env.CLOUDFRONT_PORT || '3002', 10),
-    corsOrigin: process.env.CLOUDFRONT_ORIGIN_URL || 'https://dixw5rir038vz.cloudfront.net',
-    apiUrl: `${process.env.CLOUDFRONT_ORIGIN_URL || 'https://dixw5rir038vz.cloudfront.net'}/api`,
-    environment: 'cloudfront'
-  },
-  stellate: {
-    port: parseInt(process.env.STELLATE_PORT || '3002', 10),
-    corsOrigin: process.env.STELLATE_ORIGIN_URL || 'https://capstone.stellate.sh',
-    apiUrl: `${process.env.STELLATE_ORIGIN_URL || 'https://capstone.stellate.sh'}/api`,
-    environment: 'stellate'
+  'aws-lambda': {
+    port: 0, // Not used in Lambda
+    corsOrigin: process.env.CORS_ORIGIN || '*', // CORS handled by API Gateway
+    apiUrl: '/api', // Relative path in Lambda
+    environment: 'aws-lambda',
+    awsRegion: process.env.AWS_REGION || 'us-east-1',
+    s3BucketName: process.env.S3_BUCKET_NAME || '',
   },
   localhost: {
     port: parseInt(process.env.LOCALHOST_PORT || '3002', 10),
     corsOrigin: 'http://localhost:5173',
     apiUrl: 'http://localhost:3002/api',
-    environment: 'localhost'
+    environment: 'localhost',
   }
 })
 
