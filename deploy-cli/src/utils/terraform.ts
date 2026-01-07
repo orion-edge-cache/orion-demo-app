@@ -1,14 +1,15 @@
 import { executeCommand } from './shell.js';
+import { PROJECT_ROOT } from '../index.js';
 import path from 'path';
 
-const TERRAFORM_DIR = path.join(process.cwd(), 'terraform');
+const getTerraformDir = () => path.join(PROJECT_ROOT, 'terraform');
 
 /**
  * Initialize Terraform
  */
 export async function terraformInit(): Promise<void> {
   const result = await executeCommand('terraform init', {
-    cwd: TERRAFORM_DIR,
+    cwd: getTerraformDir(),
     verbose: false,
   });
 
@@ -22,7 +23,7 @@ export async function terraformInit(): Promise<void> {
  */
 export async function terraformValidate(): Promise<void> {
   const result = await executeCommand('terraform validate', {
-    cwd: TERRAFORM_DIR,
+    cwd: getTerraformDir(),
     verbose: false,
   });
 
@@ -36,7 +37,7 @@ export async function terraformValidate(): Promise<void> {
  */
 export async function terraformPlan(): Promise<string> {
   const result = await executeCommand('terraform plan -no-color', {
-    cwd: TERRAFORM_DIR,
+    cwd: getTerraformDir(),
     verbose: false,
   });
 
@@ -52,7 +53,7 @@ export async function terraformApply(autoApprove = false): Promise<void> {
     : 'terraform apply -no-color';
 
   const result = await executeCommand(command, {
-    cwd: TERRAFORM_DIR,
+    cwd: getTerraformDir(),
     verbose: true,
   });
 
@@ -70,7 +71,7 @@ export async function terraformDestroy(autoApprove = false): Promise<void> {
     : 'terraform destroy -no-color';
 
   const result = await executeCommand(command, {
-    cwd: TERRAFORM_DIR,
+    cwd: getTerraformDir(),
     verbose: true,
   });
 
@@ -84,7 +85,7 @@ export async function terraformDestroy(autoApprove = false): Promise<void> {
  */
 export async function getTerraformOutput(outputName: string): Promise<string> {
   const result = await executeCommand(`terraform output -raw ${outputName}`, {
-    cwd: TERRAFORM_DIR,
+    cwd: getTerraformDir(),
     verbose: false,
   });
 
@@ -100,7 +101,7 @@ export async function getTerraformOutput(outputName: string): Promise<string> {
  */
 export async function getAllTerraformOutputs(): Promise<Record<string, string>> {
   const result = await executeCommand('terraform output -json', {
-    cwd: TERRAFORM_DIR,
+    cwd: getTerraformDir(),
     verbose: false,
   });
 

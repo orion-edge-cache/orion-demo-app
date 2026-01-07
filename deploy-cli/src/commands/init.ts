@@ -17,7 +17,7 @@ export async function initCommand() {
     if (!hasTerraform) {
       spinner.stop('Terraform not found');
       p.log.error('Terraform is not installed. Install from: https://developer.hashicorp.com/terraform/install');
-      process.exit(1);
+      throw new Error('Terraform not installed');
     }
 
     // Check AWS CLI
@@ -25,7 +25,7 @@ export async function initCommand() {
     if (!hasAWSCLI) {
       spinner.stop('AWS CLI not found');
       p.log.error('AWS CLI is not installed. Install from: https://aws.amazon.com/cli/');
-      process.exit(1);
+      throw new Error('AWS CLI not installed');
     }
 
     // Check AWS credentials
@@ -33,7 +33,7 @@ export async function initCommand() {
     if (!hasCredentials) {
       spinner.stop('AWS credentials not configured');
       p.log.error('AWS credentials not found. Run: aws configure');
-      process.exit(1);
+      throw new Error('AWS credentials not configured');
     }
 
     spinner.stop('Prerequisites check passed');
@@ -48,10 +48,9 @@ export async function initCommand() {
     await terraformValidate();
     spinner.stop('Configuration validated');
 
-    p.outro('Initialization complete! You can now run: graphql-deploy apply');
+    p.log.success('Initialization complete! You can now run: graphql-deploy apply');
   } catch (error: any) {
     spinner.stop('Initialization failed');
-    p.log.error(error.message);
-    process.exit(1);
+    throw error;
   }
 }

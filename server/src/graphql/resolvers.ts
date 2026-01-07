@@ -1,23 +1,18 @@
 import { readFileSync, writeFileSync, copyFileSync, existsSync } from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 import { Resolvers } from './resolvers-types'
 
-// Get __dirname equivalent for ES modules
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
 // ─────────────────────────────────────────────────────────────────────────────
-// Database Types
+// Database Types (internal, not exported)
 // ─────────────────────────────────────────────────────────────────────────────
 
-interface User {
+interface DbUser {
   id: string
   name: string
   email: string
 }
 
-interface Post {
+interface DbPost {
   id: string
   title: string
   body: string
@@ -25,7 +20,7 @@ interface Post {
   created_at?: string
 }
 
-interface Comment {
+interface DbComment {
   id: string
   body: string
   user_id: string
@@ -33,9 +28,9 @@ interface Comment {
 }
 
 interface Database {
-  users: User[]
-  posts: Post[]
-  comments: Comment[]
+  users: DbUser[]
+  posts: DbPost[]
+  comments: DbComment[]
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -129,21 +124,21 @@ export const resolvers: Resolvers = {
     users: async () => {
       await demoDelay()
       const db = readDb()
-      return db.users
+      return db.users as any
     },
 
     // Get all posts
     posts: async () => {
       await demoDelay()
       const db = readDb()
-      return db.posts
+      return db.posts as any
     },
 
     // Get all comments
     comments: async () => {
       await demoDelay()
       const db = readDb()
-      return db.comments
+      return db.comments as any
     },
 
     // Get user by ID
@@ -151,7 +146,7 @@ export const resolvers: Resolvers = {
       await demoDelay()
       const db = readDb()
       const user = db.users.find(u => u.id === id)
-      return user || null
+      return (user || null) as any
     },
 
     // Get post by ID
@@ -159,7 +154,7 @@ export const resolvers: Resolvers = {
       await demoDelay()
       const db = readDb()
       const post = db.posts.find(p => p.id === id)
-      return post || null
+      return (post || null) as any
     },
 
     // Get comment by ID
@@ -167,14 +162,14 @@ export const resolvers: Resolvers = {
       await demoDelay()
       const db = readDb()
       const comment = db.comments.find(c => c.id === id)
-      return comment || null
+      return (comment || null) as any
     },
 
     // Get posts by user ID (manual filtering)
     postsByUser: async (_parent, { user_id }) => {
       await demoDelay()
       const db = readDb()
-      return db.posts.filter(p => p.user_id === user_id)
+      return db.posts.filter(p => p.user_id === user_id) as any
     },
   },
 
@@ -183,7 +178,7 @@ export const resolvers: Resolvers = {
     posts: async (parent) => {
       await demoDelay()
       const db = readDb()
-      return db.posts.filter(p => p.user_id === parent.id)
+      return db.posts.filter(p => p.user_id === parent.id) as any
     },
   },
 
@@ -196,12 +191,12 @@ export const resolvers: Resolvers = {
       const maxId = db.users.reduce((max, u) => Math.max(max, parseInt(u.id, 10)), 0)
       const id = String(maxId + 1)
       
-      const newUser: User = { id, name, email }
+      const newUser: DbUser = { id, name, email }
       db.users.push(newUser)
       writeDb(db)
       
       console.log(`Created user: ${JSON.stringify(newUser)}`)
-      return newUser
+      return newUser as any
     },
 
     // Create a new post
@@ -212,7 +207,7 @@ export const resolvers: Resolvers = {
       const maxId = db.posts.reduce((max, p) => Math.max(max, parseInt(p.id, 10)), 0)
       const id = String(maxId + 1)
       
-      const newPost: Post = {
+      const newPost: DbPost = {
         id,
         title,
         body,
@@ -223,7 +218,7 @@ export const resolvers: Resolvers = {
       writeDb(db)
       
       console.log(`Created post: ${JSON.stringify(newPost)}`)
-      return newPost
+      return newPost as any
     },
 
     // Create a new comment
@@ -234,12 +229,12 @@ export const resolvers: Resolvers = {
       const maxId = db.comments.reduce((max, c) => Math.max(max, parseInt(c.id, 10)), 0)
       const id = String(maxId + 1)
       
-      const newComment: Comment = { id, body, user_id, post_id }
+      const newComment: DbComment = { id, body, user_id, post_id }
       db.comments.push(newComment)
       writeDb(db)
       
       console.log(`Created comment: ${JSON.stringify(newComment)}`)
-      return newComment
+      return newComment as any
     },
 
     // Update an existing user
@@ -256,7 +251,7 @@ export const resolvers: Resolvers = {
       writeDb(db)
       
       console.log(`Updated user: ${JSON.stringify(db.users[userIndex])}`)
-      return db.users[userIndex]
+      return db.users[userIndex] as any
     },
 
     // Update an existing post
@@ -276,12 +271,12 @@ export const resolvers: Resolvers = {
         title,
         body,
         user_id,
-        created_at: existingPost.created_at,
+        created_at: existingPost?.created_at || new Date().toISOString(),
       }
       writeDb(db)
       
       console.log(`Updated post: ${JSON.stringify(db.posts[postIndex])}`)
-      return db.posts[postIndex]
+      return db.posts[postIndex] as any
     },
 
     // Update an existing comment
@@ -298,7 +293,7 @@ export const resolvers: Resolvers = {
       writeDb(db)
       
       console.log(`Updated comment: ${JSON.stringify(db.comments[commentIndex])}`)
-      return db.comments[commentIndex]
+      return db.comments[commentIndex] as any
     },
 
     // Delete a user
@@ -315,7 +310,7 @@ export const resolvers: Resolvers = {
       writeDb(db)
       
       console.log(`Deleted user: ${JSON.stringify(deletedUser)}`)
-      return deletedUser
+      return deletedUser as any
     },
 
     // Delete a post
@@ -332,7 +327,7 @@ export const resolvers: Resolvers = {
       writeDb(db)
       
       console.log(`Deleted post: ${JSON.stringify(deletedPost)}`)
-      return deletedPost
+      return deletedPost as any
     },
 
     // Delete a comment
@@ -349,7 +344,7 @@ export const resolvers: Resolvers = {
       writeDb(db)
       
       console.log(`Deleted comment: ${JSON.stringify(deletedComment)}`)
-      return deletedComment
+      return deletedComment as any
     },
 
     // Reset database to initial state
@@ -368,7 +363,7 @@ export const resolvers: Resolvers = {
           users: db.users,
           posts: db.posts,
           comments: db.comments,
-        }
+        } as any
       } catch (error) {
         console.error('Failed to reset database:', error)
         return null

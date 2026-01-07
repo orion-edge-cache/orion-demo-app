@@ -12,14 +12,13 @@ export async function destroyCommand() {
       outputs = await getAllTerraformOutputs();
     } catch (error) {
       p.log.warn('No infrastructure found to destroy');
-      process.exit(0);
+      return;
     }
 
     // Show what will be destroyed
     p.note(
       [
         `Lambda Function:   ${outputs.lambda_function_name || 'N/A'}`,
-        `Data Bucket:       ${outputs.data_bucket || 'N/A'}`,
         `Client Bucket:     ${outputs.client_bucket || 'N/A'}`,
         `API Gateway:       ${outputs.api_endpoint || 'N/A'}`,
       ].join('\n'),
@@ -33,8 +32,8 @@ export async function destroyCommand() {
     });
 
     if (p.isCancel(shouldDestroy) || !shouldDestroy) {
-      p.cancel('Destruction cancelled');
-      process.exit(0);
+      p.log.warn('Destruction cancelled');
+      return;
     }
 
     // Double confirmation for safety
@@ -48,19 +47,13 @@ export async function destroyCommand() {
     });
 
     if (p.isCancel(confirmText) || confirmText !== 'yes') {
-      p.cancel('Destruction cancelled');
-      process.exit(0);
+      p.log.warn('Destruction cancelled');
+      return;
     }
 
     const spinner = p.spinner();
 
-    // Empty S3 buckets first (Terraform can't destroy non-empty buckets)
-    if (outputs.data_bucket) {
-      spinner.start(`Emptying data bucket: ${outputs.data_bucket}`);
-      await emptyS3Bucket(outputs.data_bucket);
-      spinner.stop('Data bucket emptied');
-    }
-
+    // Empty S3 client bucket first (Terraform can't destroy non-empty buckets)
     if (outputs.client_bucket) {
       spinner.start(`Emptying client bucket: ${outputs.client_bucket}`);
       await emptyS3Bucket(outputs.client_bucket);
@@ -72,10 +65,9 @@ export async function destroyCommand() {
     await terraformDestroy(true);
     spinner.stop('Infrastructure destroyed');
 
-    p.outro('All resources destroyed successfully');
+    p.log.success('All resources destroyed successfully');
   } catch (error: any) {
     p.log.error(error.message);
-    p.outro('Destruction failed');
-    process.exit(1);
+    throw error;
   }
 }
