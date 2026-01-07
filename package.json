@@ -42,7 +42,9 @@
   },
   "files": [
     "dist",
+    "src",
     "assets",
-    "terraform"
+    "terraform",
+    "tsconfig.json"
   ]
 }
