@@ -1,6 +1,6 @@
 # Lambda function for GraphQL server
 resource "aws_lambda_function" "graphql" {
-  filename      = "${path.module}/../lambda-function.zip"
+  filename      = "${path.module}/../assets/lambda-function.zip"
   function_name = "${var.app_name}-function"
   role          = aws_iam_role.lambda_role.arn
   handler       = "lambda-handler.handler"
@@ -8,7 +8,7 @@ resource "aws_lambda_function" "graphql" {
   memory_size   = var.lambda_memory
   timeout       = var.lambda_timeout
 
-  source_code_hash = fileexists("${path.module}/../lambda-function.zip") ? filebase64sha256("${path.module}/../lambda-function.zip") : null
+  source_code_hash = fileexists("${path.module}/../assets/lambda-function.zip") ? filebase64sha256("${path.module}/../assets/lambda-function.zip") : null
 
   environment {
     variables = {

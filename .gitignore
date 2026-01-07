@@ -1,33 +1,29 @@
+# Dependencies
 node_modules/
+
+# Build output
 dist/
-.env
-.env.local
-DS_Store
-logs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
 *.log
-npm_debug.log
-*.sw?
-*.tmp
-coverage/
-.cache/
-dump/
-*.mongodb
-*.pdf
+npm-debug.log*
 
 # Terraform
-terraform/.terraform/
-terraform/terraform.tfstate
-terraform/terraform.tfstate.backup
-terraform/crash.log
-terraform/*.tfvars.json
-terraform/override.tf
-terraform/override.tf.json
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
 
-# CLI tool
-deploy-cli/dist/
-deploy-cli/node_modules/
-
-# Build artifacts
-*.zip
-build/
-lambda-function.zip
+# Don't ignore the pre-built assets
+!assets/lambda-function.zip
+!assets/client/

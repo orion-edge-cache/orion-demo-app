@@ -1,23 +1,47 @@
 {
-  "name": "orion-demo-app",
+  "name": "@orion/demo-app-deploy",
   "version": "1.0.0",
-  "description": "GraphQL Demo App with AWS Lambda deployment",
-  "private": true,
-  "scripts": {
-    "install:all": "npm install --prefix client && npm install --prefix server && npm install --prefix deploy-cli",
-    "dev:client": "npm run dev --prefix client",
-    "dev:server": "npm run dev --prefix server",
-    "build:client": "npm run build --prefix client",
-    "build:server": "npm run build --prefix server",
-    "build:cli": "npm run build --prefix deploy-cli",
-    "start": "node deploy-cli/dist/index.js",
-    "deploy": "npm run build:cli && node deploy-cli/dist/index.js",
-    "deploy:init": "npm run build:cli && node deploy-cli/dist/index.js init",
-    "deploy:build": "npm run build:cli && node deploy-cli/dist/index.js build",
-    "deploy:apply": "npm run build:cli && node deploy-cli/dist/index.js apply",
-    "deploy:destroy": "npm run build:cli && node deploy-cli/dist/index.js destroy"
+  "description": "Deploy a demo GraphQL app to AWS Lambda for testing Orion edge cache",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   },
-  "keywords": ["graphql", "aws", "lambda", "demo"],
-  "author": "",
-  "license": "ISC"
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "orion",
+    "graphql",
+    "demo",
+    "aws",
+    "lambda",
+    "deploy"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.400.0",
+    "@aws-sdk/client-sts": "^3.400.0",
+    "@aws-sdk/lib-storage": "^3.400.0",
+    "mime-types": "^2.1.35"
+  },
+  "devDependencies": {
+    "@types/mime-types": "^2.1.4",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "assets",
+    "terraform"
+  ]
 }
