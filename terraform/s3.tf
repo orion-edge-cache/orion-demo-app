@@ -1,22 +1,3 @@
-# S3 bucket for storing database (db.json)
-resource "aws_s3_bucket" "data" {
-  bucket = "${var.app_name}-data-${data.aws_caller_identity.current.account_id}"
-
-  tags = {
-    Name        = "${var.app_name}-data"
-    Environment = var.environment
-  }
-}
-
-# Enable versioning for data bucket (for recovery)
-resource "aws_s3_bucket_versioning" "data" {
-  bucket = aws_s3_bucket.data.id
-
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
-
 # S3 bucket for React client (static website hosting)
 resource "aws_s3_bucket" "client" {
   bucket = "${var.app_name}-client-${data.aws_caller_identity.current.account_id}"

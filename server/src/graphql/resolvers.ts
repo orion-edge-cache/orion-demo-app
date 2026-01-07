@@ -1,127 +1,378 @@
-import axios from 'axios'
+import { readFileSync, writeFileSync, copyFileSync, existsSync } from 'fs'
 import path from 'path'
-import { readFileSync, writeFileSync } from 'fs'
+import { fileURLToPath } from 'url'
 import { Resolvers } from './resolvers-types'
-import { CURRENT_CONFIG, DEPLOYMENT_ENV } from '../config'
 
-const baseApiUrl = CURRENT_CONFIG.apiUrl
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Database Types
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface User {
+  id: string
+  name: string
+  email: string
+}
+
+interface Post {
+  id: string
+  title: string
+  body: string
+  user_id: string
+  created_at?: string
+}
+
+interface Comment {
+  id: string
+  body: string
+  user_id: string
+  post_id: string
+}
+
+interface Database {
+  users: User[]
+  posts: Post[]
+  comments: Comment[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// File Path Helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+const isLambda = (): boolean => {
+  return process.env.DEPLOYMENT_ENV === 'aws-lambda'
+}
+
+const getDbPath = (): string => {
+  if (isLambda()) {
+    return '/tmp/db.json'
+  }
+  return path.join(__dirname, '../db/json/db.json')
+}
+
+const getResetPath = (): string => {
+  // Reset file is always in the packaged location
+  return path.join(__dirname, '../db/json/db-reset.json')
+}
+
+const getPackagedDbPath = (): string => {
+  // Original db.json packaged with Lambda
+  return path.join(__dirname, '../db/json/db.json')
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Database Operations
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Ensure db.json exists in /tmp for Lambda (cold start handling)
+ */
+const ensureDbExists = (): void => {
+  if (isLambda()) {
+    const tmpPath = getDbPath()
+    if (!existsSync(tmpPath)) {
+      // Cold start: copy packaged db.json to /tmp
+      const sourcePath = getPackagedDbPath()
+      console.log(`Cold start: copying db.json from ${sourcePath} to ${tmpPath}`)
+      copyFileSync(sourcePath, tmpPath)
+      console.log('Cold start: db.json copied to /tmp')
+    }
+  }
+}
+
+/**
+ * Read the database from disk
+ */
+const readDb = (): Database => {
+  ensureDbExists()
+  const dbPath = getDbPath()
+  try {
+    const content = readFileSync(dbPath, 'utf-8')
+    return JSON.parse(content) as Database
+  } catch (error) {
+    console.error('Error reading database:', error)
+    throw new Error('Failed to read database')
+  }
+}
+
+/**
+ * Write the database to disk
+ */
+const writeDb = (data: Database): void => {
+  const dbPath = getDbPath()
+  try {
+    writeFileSync(dbPath, JSON.stringify(data, null, 2), 'utf-8')
+    console.log('Database written successfully')
+  } catch (error) {
+    console.error('Error writing database:', error)
+    throw new Error('Failed to write database')
+  }
+}
+
+/**
+ * Demo delay to simulate network latency
+ */
+const demoDelay = (): Promise<void> => {
+  return new Promise(resolve => setTimeout(resolve, 500))
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Resolvers
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const resolvers: Resolvers = {
   Query: {
+    // Get all users
     users: async () => {
-      await new Promise(resolve => setTimeout(resolve, 500))
-      const res = await axios.get(`${baseApiUrl}/users`)
-      return res.data
+      await demoDelay()
+      const db = readDb()
+      return db.users
     },
-    posts: async () => {
-      await new Promise(resolve => setTimeout(resolve, 500))
-      const res = await axios.get(`${baseApiUrl}/posts`)
-      return res.data
-    },
-    comments: async () => {
-      await new Promise(resolve => setTimeout(resolve, 500))
-      const res = await axios.get(`${baseApiUrl}/comments`)
-      return res.data
-    },
-    user: async (_: any, { id }: { id: string }) => {
-      await new Promise(resolve => setTimeout(resolve, 500))
-      const res = await axios.get(`${baseApiUrl}/users/${id}`)
-      return res.data
-    },
-    post: async (_: any, { id }: { id: string }) => {
-      await new Promise(resolve => setTimeout(resolve, 500))
-      const res = await axios.get(`${baseApiUrl}/posts/${id}`)
-      return res.data
-    },
-    comment: async (_: any, { id }: { id: string }) => {
-      await new Promise(resolve => setTimeout(resolve, 500))
-      const res = await axios.get(`${baseApiUrl}/comments/${id}`)
-      return res.data
-    },
-    postsByUser: async (_: any, { user_id }: { user_id: string }) => {
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate delay
-      const res = await axios.get(`${baseApiUrl}/posts?user_id=${user_id}`);
-      return res.data;
-    },
-  },
-  User: {
-    //For User.posts (resolver on User type):
-    posts: async (parent: { id: string }) => {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const res = await axios.get(`${baseApiUrl}/posts?user_id=${parent.id}`);
-      return res.data;
-    }
-  },
-  Mutation: {
-    createUser: async (_parent, args, _context) => {
-      const { name, email } = args
-      const users = await axios.get(`${baseApiUrl}/users`)
-      const id = String(users.data.length + 1)
-      const res = await axios.post(`${baseApiUrl}/users`, { id, name, email })
-      return res.data
-    },
-    createPost: async (_parent, args, _context) => {
-      const { title, user_id, body } = args
-      const posts = await axios.get(`${baseApiUrl}/posts`)
-      const id = String(posts.data.length + 1)
-      const res = await axios.post(`${baseApiUrl}/posts`, { id, title, user_id, body })
-      return res.data
-    },
-    createComment: async (_parent, args, _context) => {
-      const { post_id, user_id, body } = args
-      const comments = await axios.get(`${baseApiUrl}/comments`)
-      const id = String(comments.data.length + 1)
-      const res = await axios.post(`${baseApiUrl}/comments`, { id, post_id, user_id, body })
-      return res.data
-    },
-    updateUser: async (_parent, args, _context) => {
-      const { id, name, email } = args
-      console.log("UPDATE USER")
-      const res = await axios.put(`${baseApiUrl}/users/${id}`, { name, email })
-      return res.data
-    },
-    updatePost: async (_parent, args, _context) => {
-      const { id, title, user_id, body } = args
-      const res = await axios.put(`${baseApiUrl}/posts/${id}`, { title, user_id, body })
-      return res.data
-    },
-    updateComment: async (_parent, args, _context) => {
-      const { id, post_id, user_id, body } = args
-      const res = await axios.put(`${baseApiUrl}/comments/${id}`, { post_id, user_id, body })
-      return res.data
-    },
-    deleteUser: async (_parent, args, _context) => {
-      const { id } = args
-      const userRes = await axios.get(`${baseApiUrl}/users/${id}`)
-      const user = userRes.data
-      await axios.delete(`${baseApiUrl}/users/${id}`)
-      return user
-    },
-    deletePost: async (_parent, args, _context) => {
-      const { id } = args
-      const res = await axios.delete(`${baseApiUrl}/posts/${id}`)
-      return res.data
-    },
-    deleteComment: async (_parent, args, _context) => {
-      const { id } = args
-      const res = await axios.delete(`${baseApiUrl}/comments/${id}`)
-      return res.data
-    },
-    reset: async () => {
-      const dbJsonPath = path.join(__dirname, '../db/json/db.json')
-      const dbDir = path.join(__dirname, '../db/json')
-      try {
-        const users = JSON.parse(readFileSync(path.join(dbDir, 'users.json'), 'utf-8'))
-        const posts = JSON.parse(readFileSync(path.join(dbDir, 'posts.json'), 'utf-8'))
-        const comments = JSON.parse(readFileSync(path.join(dbDir, 'comments.json'), 'utf-8'))
 
-        const db = { users, posts, comments }
-        writeFileSync(dbJsonPath, JSON.stringify(db, null, 2))
-        return { users, posts, comments }
-      } catch (error) {
-        console.log('Failed to reset database', error)
+    // Get all posts
+    posts: async () => {
+      await demoDelay()
+      const db = readDb()
+      return db.posts
+    },
+
+    // Get all comments
+    comments: async () => {
+      await demoDelay()
+      const db = readDb()
+      return db.comments
+    },
+
+    // Get user by ID
+    user: async (_parent, { id }) => {
+      await demoDelay()
+      const db = readDb()
+      const user = db.users.find(u => u.id === id)
+      return user || null
+    },
+
+    // Get post by ID
+    post: async (_parent, { id }) => {
+      await demoDelay()
+      const db = readDb()
+      const post = db.posts.find(p => p.id === id)
+      return post || null
+    },
+
+    // Get comment by ID
+    comment: async (_parent, { id }) => {
+      await demoDelay()
+      const db = readDb()
+      const comment = db.comments.find(c => c.id === id)
+      return comment || null
+    },
+
+    // Get posts by user ID (manual filtering)
+    postsByUser: async (_parent, { user_id }) => {
+      await demoDelay()
+      const db = readDb()
+      return db.posts.filter(p => p.user_id === user_id)
+    },
+  },
+
+  User: {
+    // Resolve posts for a user (manual filtering)
+    posts: async (parent) => {
+      await demoDelay()
+      const db = readDb()
+      return db.posts.filter(p => p.user_id === parent.id)
+    },
+  },
+
+  Mutation: {
+    // Create a new user
+    createUser: async (_parent, { name, email }) => {
+      const db = readDb()
+      
+      // Generate new ID (max existing ID + 1)
+      const maxId = db.users.reduce((max, u) => Math.max(max, parseInt(u.id, 10)), 0)
+      const id = String(maxId + 1)
+      
+      const newUser: User = { id, name, email }
+      db.users.push(newUser)
+      writeDb(db)
+      
+      console.log(`Created user: ${JSON.stringify(newUser)}`)
+      return newUser
+    },
+
+    // Create a new post
+    createPost: async (_parent, { title, user_id, body }) => {
+      const db = readDb()
+      
+      // Generate new ID
+      const maxId = db.posts.reduce((max, p) => Math.max(max, parseInt(p.id, 10)), 0)
+      const id = String(maxId + 1)
+      
+      const newPost: Post = {
+        id,
+        title,
+        body,
+        user_id,
+        created_at: new Date().toISOString(),
+      }
+      db.posts.push(newPost)
+      writeDb(db)
+      
+      console.log(`Created post: ${JSON.stringify(newPost)}`)
+      return newPost
+    },
+
+    // Create a new comment
+    createComment: async (_parent, { post_id, user_id, body }) => {
+      const db = readDb()
+      
+      // Generate new ID
+      const maxId = db.comments.reduce((max, c) => Math.max(max, parseInt(c.id, 10)), 0)
+      const id = String(maxId + 1)
+      
+      const newComment: Comment = { id, body, user_id, post_id }
+      db.comments.push(newComment)
+      writeDb(db)
+      
+      console.log(`Created comment: ${JSON.stringify(newComment)}`)
+      return newComment
+    },
+
+    // Update an existing user
+    updateUser: async (_parent, { id, name, email }) => {
+      const db = readDb()
+      
+      const userIndex = db.users.findIndex(u => u.id === id)
+      if (userIndex === -1) {
+        console.log(`User not found: ${id}`)
         return null
       }
-    }
-  }
+      
+      db.users[userIndex] = { id, name, email }
+      writeDb(db)
+      
+      console.log(`Updated user: ${JSON.stringify(db.users[userIndex])}`)
+      return db.users[userIndex]
+    },
+
+    // Update an existing post
+    updatePost: async (_parent, { id, title, user_id, body }) => {
+      const db = readDb()
+      
+      const postIndex = db.posts.findIndex(p => p.id === id)
+      if (postIndex === -1) {
+        console.log(`Post not found: ${id}`)
+        return null
+      }
+      
+      // Preserve created_at if it exists
+      const existingPost = db.posts[postIndex]
+      db.posts[postIndex] = {
+        id,
+        title,
+        body,
+        user_id,
+        created_at: existingPost.created_at,
+      }
+      writeDb(db)
+      
+      console.log(`Updated post: ${JSON.stringify(db.posts[postIndex])}`)
+      return db.posts[postIndex]
+    },
+
+    // Update an existing comment
+    updateComment: async (_parent, { id, post_id, user_id, body }) => {
+      const db = readDb()
+      
+      const commentIndex = db.comments.findIndex(c => c.id === id)
+      if (commentIndex === -1) {
+        console.log(`Comment not found: ${id}`)
+        return null
+      }
+      
+      db.comments[commentIndex] = { id, body, user_id, post_id }
+      writeDb(db)
+      
+      console.log(`Updated comment: ${JSON.stringify(db.comments[commentIndex])}`)
+      return db.comments[commentIndex]
+    },
+
+    // Delete a user
+    deleteUser: async (_parent, { id }) => {
+      const db = readDb()
+      
+      const userIndex = db.users.findIndex(u => u.id === id)
+      if (userIndex === -1) {
+        console.log(`User not found: ${id}`)
+        return null
+      }
+      
+      const [deletedUser] = db.users.splice(userIndex, 1)
+      writeDb(db)
+      
+      console.log(`Deleted user: ${JSON.stringify(deletedUser)}`)
+      return deletedUser
+    },
+
+    // Delete a post
+    deletePost: async (_parent, { id }) => {
+      const db = readDb()
+      
+      const postIndex = db.posts.findIndex(p => p.id === id)
+      if (postIndex === -1) {
+        console.log(`Post not found: ${id}`)
+        return null
+      }
+      
+      const [deletedPost] = db.posts.splice(postIndex, 1)
+      writeDb(db)
+      
+      console.log(`Deleted post: ${JSON.stringify(deletedPost)}`)
+      return deletedPost
+    },
+
+    // Delete a comment
+    deleteComment: async (_parent, { id }) => {
+      const db = readDb()
+      
+      const commentIndex = db.comments.findIndex(c => c.id === id)
+      if (commentIndex === -1) {
+        console.log(`Comment not found: ${id}`)
+        return null
+      }
+      
+      const [deletedComment] = db.comments.splice(commentIndex, 1)
+      writeDb(db)
+      
+      console.log(`Deleted comment: ${JSON.stringify(deletedComment)}`)
+      return deletedComment
+    },
+
+    // Reset database to initial state
+    reset: async () => {
+      try {
+        const resetPath = getResetPath()
+        const dbPath = getDbPath()
+        
+        console.log(`Resetting database from ${resetPath} to ${dbPath}`)
+        copyFileSync(resetPath, dbPath)
+        
+        const db = readDb()
+        console.log('Database reset successfully')
+        
+        return {
+          users: db.users,
+          posts: db.posts,
+          comments: db.comments,
+        }
+      } catch (error) {
+        console.error('Failed to reset database:', error)
+        return null
+      }
+    },
+  },
 }

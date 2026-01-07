@@ -1,0 +1,23 @@
+{
+  "name": "orion-demo-app",
+  "version": "1.0.0",
+  "description": "GraphQL Demo App with AWS Lambda deployment",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install --prefix client && npm install --prefix server && npm install --prefix deploy-cli",
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "build:client": "npm run build --prefix client",
+    "build:server": "npm run build --prefix server",
+    "build:cli": "npm run build --prefix deploy-cli",
+    "start": "node deploy-cli/dist/index.js",
+    "deploy": "npm run build:cli && node deploy-cli/dist/index.js",
+    "deploy:init": "npm run build:cli && node deploy-cli/dist/index.js init",
+    "deploy:build": "npm run build:cli && node deploy-cli/dist/index.js build",
+    "deploy:apply": "npm run build:cli && node deploy-cli/dist/index.js apply",
+    "deploy:destroy": "npm run build:cli && node deploy-cli/dist/index.js destroy"
+  },
+  "keywords": ["graphql", "aws", "lambda", "demo"],
+  "author": "",
+  "license": "ISC"
+}

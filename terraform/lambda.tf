@@ -13,8 +13,6 @@ resource "aws_lambda_function" "graphql" {
   environment {
     variables = {
       DEPLOYMENT_ENV = "aws-lambda"
-      S3_BUCKET_NAME = aws_s3_bucket.data.id
-      AWS_REGION     = var.aws_region
       NODE_ENV       = "production"
     }
   }
@@ -26,8 +24,7 @@ resource "aws_lambda_function" "graphql" {
 
   # Ensure Lambda waits for IAM role to be ready
   depends_on = [
-    aws_iam_role_policy_attachment.lambda_basic,
-    aws_iam_role_policy.lambda_s3
+    aws_iam_role_policy_attachment.lambda_basic
   ]
 }
 

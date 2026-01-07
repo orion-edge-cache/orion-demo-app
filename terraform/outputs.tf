@@ -10,12 +10,6 @@ output "graphql_endpoint" {
   value       = "${aws_apigatewayv2_api.graphql.api_endpoint}/graphql"
 }
 
-# REST API endpoint URL
-output "api_url" {
-  description = "REST API endpoint URL"
-  value       = "${aws_apigatewayv2_api.graphql.api_endpoint}/api"
-}
-
 # S3 static website endpoint
 output "s3_website_endpoint" {
   description = "S3 static website endpoint"
@@ -26,12 +20,6 @@ output "s3_website_endpoint" {
 output "s3_website_url" {
   description = "S3 static website URL"
   value       = "http://${aws_s3_bucket.client.bucket}.s3-website-${var.aws_region}.amazonaws.com"
-}
-
-# Data bucket name
-output "data_bucket" {
-  description = "S3 bucket name for database"
-  value       = aws_s3_bucket.data.id
 }
 
 # Client bucket name

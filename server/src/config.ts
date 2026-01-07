@@ -3,10 +3,7 @@ type DeploymentEnv = 'aws-lambda' | 'localhost'
 interface EnvConfig {
   port: number
   corsOrigin: string
-  apiUrl: string
   environment: DeploymentEnv
-  awsRegion?: string
-  s3BucketName?: string
 }
 
 const isValidEnv = (env: string): env is DeploymentEnv => {
@@ -35,15 +32,11 @@ const buildConfig = (): Record<DeploymentEnv, EnvConfig> => ({
   'aws-lambda': {
     port: 0, // Not used in Lambda
     corsOrigin: process.env.CORS_ORIGIN || '*', // CORS handled by API Gateway
-    apiUrl: '/api', // Relative path in Lambda
     environment: 'aws-lambda',
-    awsRegion: process.env.AWS_REGION || 'us-east-1',
-    s3BucketName: process.env.S3_BUCKET_NAME || '',
   },
   localhost: {
     port: parseInt(process.env.LOCALHOST_PORT || '3002', 10),
     corsOrigin: 'http://localhost:5173',
-    apiUrl: 'http://localhost:3002/api',
     environment: 'localhost',
   }
 })
