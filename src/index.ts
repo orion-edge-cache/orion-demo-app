@@ -1,5 +1,5 @@
 /**
- * @orion/demo-app-deploy
+ * @orion/demo-app
  * 
  * Deploy a demo GraphQL app to AWS Lambda for testing Orion edge cache.
  * 

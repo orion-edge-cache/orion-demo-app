@@ -1,5 +1,5 @@
 {
-  "name": "@orion/demo-app-deploy",
+  "name": "@orion/demo-app",
   "version": "1.0.0",
   "description": "Deploy a demo GraphQL app to AWS Lambda for testing Orion edge cache",
   "type": "module",
@@ -13,6 +13,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "prepare": "npm run build",
     "prepublishOnly": "npm run build",
     "clean": "rm -rf dist"
   },

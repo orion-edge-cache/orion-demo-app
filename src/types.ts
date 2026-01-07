@@ -1,5 +1,5 @@
 /**
- * Type definitions for @orion/demo-app-deploy
+ * Type definitions for @orion/demo-app
  */
 
 export interface DemoAppAwsConfig {
