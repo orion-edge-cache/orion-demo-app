@@ -144,8 +144,16 @@ export function cleanupClientBuild(): void {
 /**
  * Build the Lambda function from TypeScript source
  * Creates lambda-function.zip in assets/
+ *
+ * If the zip already exists (e.g., when running from node_modules with pre-built assets),
+ * skip the build process and use the existing zip.
  */
 export async function buildLambda(): Promise<string> {
+  // If zip already exists, skip building (common when installed from npm)
+  if (fs.existsSync(LAMBDA_ZIP_PATH)) {
+    return LAMBDA_ZIP_PATH;
+  }
+
   // Verify lambda-src exists
   if (!fs.existsSync(LAMBDA_SRC_DIR)) {
     throw new Error(`Lambda source not found at ${LAMBDA_SRC_DIR}`);
