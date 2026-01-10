@@ -3,7 +3,7 @@
  */
 
 import { terraformInit, terraformApply, getTerraformOutputs } from './terraform/index.js';
-import { buildClient, cleanupClientBuild, buildLambda } from './build/index.js';
+import { buildClient, cleanupClientBuild, ensureLambdaZipExists } from './build/index.js';
 import { uploadDirectoryToS3, verifyAwsCredentials } from './aws/index.js';
 import { saveDemoAppOutputs } from './credentials/index.js';
 import type { DemoAppConfig, DemoAppOutputs, ProgressCallback } from './types.js';
@@ -25,9 +25,9 @@ export async function deployDemoApp(
       throw new Error('Invalid AWS credentials');
     }
 
-    // Step 2: Build Lambda from TypeScript source
-    progress({ step: 'build-lambda', message: 'Building Lambda function...', progress: 10 });
-    await buildLambda();
+    // Step 2: Verify Lambda zip exists
+    progress({ step: 'check-lambda', message: 'Verifying Lambda package...', progress: 10 });
+    ensureLambdaZipExists();
 
     // Step 3: Initialize Terraform
     progress({ step: 'terraform-init', message: 'Initializing Terraform...', progress: 15 });

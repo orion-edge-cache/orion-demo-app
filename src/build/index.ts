@@ -9,7 +9,6 @@ import {
   CLIENT_SOURCE_DIR,
   CLIENT_BUILD_DIR,
   CLIENT_DIST_DIR,
-  LAMBDA_SRC_DIR,
   LAMBDA_ZIP_PATH,
 } from '../config.js';
 import type { CommandResult } from '../types.js';
@@ -142,57 +141,18 @@ export function cleanupClientBuild(): void {
 }
 
 /**
- * Build the Lambda function from TypeScript source
- * Creates lambda-function.zip in assets/
+ * Verify that the pre-built Lambda zip exists.
+ * The zip must be built locally and committed to the repo.
  *
- * If the zip already exists (e.g., when running from node_modules with pre-built assets),
- * skip the build process and use the existing zip.
+ * To build: cd lambda-src && npm run build
  */
-export async function buildLambda(): Promise<string> {
-  // If zip already exists, skip building (common when installed from npm)
-  if (fs.existsSync(LAMBDA_ZIP_PATH)) {
-    return LAMBDA_ZIP_PATH;
-  }
-
-  // Verify lambda-src exists
-  if (!fs.existsSync(LAMBDA_SRC_DIR)) {
-    throw new Error(`Lambda source not found at ${LAMBDA_SRC_DIR}`);
-  }
-
-  const packageJsonPath = path.join(LAMBDA_SRC_DIR, 'package.json');
-  if (!fs.existsSync(packageJsonPath)) {
-    throw new Error(`Lambda package.json not found at ${packageJsonPath}`);
-  }
-
-  // Check if node_modules exists, if not install dependencies
-  const nodeModulesPath = path.join(LAMBDA_SRC_DIR, 'node_modules');
-  if (!fs.existsSync(nodeModulesPath)) {
-    const installResult = await executeCommand(
-      'npm',
-      ['install'],
-      { cwd: LAMBDA_SRC_DIR }
-    );
-
-    if (installResult.code !== 0) {
-      throw new Error(`Failed to install Lambda dependencies: ${installResult.stderr}`);
-    }
-  }
-
-  // Run the build script (compiles TypeScript, copies static files, creates zip)
-  const buildResult = await executeCommand(
-    'npm',
-    ['run', 'build'],
-    { cwd: LAMBDA_SRC_DIR }
-  );
-
-  if (buildResult.code !== 0) {
-    throw new Error(`Failed to build Lambda: ${buildResult.stderr}`);
-  }
-
-  // Verify the zip was created
+export function ensureLambdaZipExists(): string {
   if (!fs.existsSync(LAMBDA_ZIP_PATH)) {
-    throw new Error(`Lambda build did not produce zip at ${LAMBDA_ZIP_PATH}`);
+    throw new Error(
+      `Lambda zip not found at ${LAMBDA_ZIP_PATH}. ` +
+      `The pre-built lambda-function.zip must be included in the package. ` +
+      `Build it with: cd lambda-src && npm run build`
+    );
   }
-
   return LAMBDA_ZIP_PATH;
 }
