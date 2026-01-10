@@ -24,8 +24,7 @@ npm-debug.log*
 *.tfstate.*
 .terraform.lock.hcl
 
-# Lambda build output (built at deploy time from lambda-src/)
-assets/lambda-function.zip
+# Lambda build output (intermediate files, not the final zip)
 lambda-src/lambda-function.zip
 lambda-src/build/
 lambda-src/dist/
