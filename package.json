@@ -45,6 +45,7 @@
     "src",
     "assets",
     "terraform",
+    "lambda-src",
     "tsconfig.json"
   ]
 }
