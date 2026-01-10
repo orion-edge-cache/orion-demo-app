@@ -19,6 +19,9 @@ export const ASSETS_DIR = path.join(PACKAGE_ROOT, 'assets');
 export const LAMBDA_ZIP_PATH = path.join(ASSETS_DIR, 'lambda-function.zip');
 export const CLIENT_SOURCE_DIR = path.join(ASSETS_DIR, 'client');
 
+// Lambda source paths
+export const LAMBDA_SRC_DIR = path.join(PACKAGE_ROOT, 'lambda-src');
+
 // Terraform paths
 export const TERRAFORM_DIR = path.join(PACKAGE_ROOT, 'terraform');
 

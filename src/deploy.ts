@@ -3,7 +3,7 @@
  */
 
 import { terraformInit, terraformApply, getTerraformOutputs } from './terraform/index.js';
-import { buildClient, cleanupClientBuild } from './build/index.js';
+import { buildClient, cleanupClientBuild, buildLambda } from './build/index.js';
 import { uploadDirectoryToS3, verifyAwsCredentials } from './aws/index.js';
 import { saveDemoAppOutputs } from './credentials/index.js';
 import type { DemoAppConfig, DemoAppOutputs, ProgressCallback } from './types.js';
@@ -25,31 +25,35 @@ export async function deployDemoApp(
       throw new Error('Invalid AWS credentials');
     }
 
-    // Step 2: Initialize Terraform
-    progress({ step: 'terraform-init', message: 'Initializing Terraform...', progress: 10 });
+    // Step 2: Build Lambda from TypeScript source
+    progress({ step: 'build-lambda', message: 'Building Lambda function...', progress: 10 });
+    await buildLambda();
+
+    // Step 3: Initialize Terraform
+    progress({ step: 'terraform-init', message: 'Initializing Terraform...', progress: 15 });
     await terraformInit();
 
-    // Step 3: Apply Terraform (creates Lambda, API Gateway, S3 bucket)
+    // Step 4: Apply Terraform (creates Lambda, API Gateway, S3 bucket)
     progress({ step: 'terraform-apply', message: 'Creating AWS resources (this may take a few minutes)...', progress: 20 });
     await terraformApply(config.aws);
 
-    // Step 4: Get Terraform outputs
+    // Step 5: Get Terraform outputs
     progress({ step: 'outputs', message: 'Retrieving deployment info...', progress: 50 });
     const tfOutputs = await getTerraformOutputs();
 
-    // Step 5: Build client with API Gateway URL
+    // Step 6: Build client with API Gateway URL
     progress({ step: 'build-client', message: 'Building React client...', progress: 60 });
     const clientDistDir = await buildClient(tfOutputs.api_endpoint);
 
-    // Step 6: Upload client to S3
+    // Step 7: Upload client to S3
     progress({ step: 'upload', message: 'Uploading client to S3...', progress: 80 });
     await uploadDirectoryToS3(config.aws, tfOutputs.client_bucket, clientDistDir);
 
-    // Step 7: Clean up build directory
+    // Step 8: Clean up build directory
     progress({ step: 'cleanup', message: 'Cleaning up...', progress: 90 });
     cleanupClientBuild();
 
-    // Step 8: Save outputs to deployment-config.json
+    // Step 9: Save outputs to deployment-config.json
     progress({ step: 'save', message: 'Saving deployment info...', progress: 95 });
     const outputs: DemoAppOutputs = {
       graphqlEndpoint: tfOutputs.graphql_endpoint,

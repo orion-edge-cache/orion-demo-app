@@ -24,6 +24,12 @@ npm-debug.log*
 *.tfstate.*
 .terraform.lock.hcl
 
-# Don't ignore the pre-built assets
-!assets/lambda-function.zip
+# Lambda build output (built at deploy time from lambda-src/)
+assets/lambda-function.zip
+lambda-src/lambda-function.zip
+lambda-src/build/
+lambda-src/dist/
+lambda-src/node_modules/
+
+# Don't ignore pre-built client assets
 !assets/client/
