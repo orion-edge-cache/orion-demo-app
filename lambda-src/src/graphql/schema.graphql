@@ -1,0 +1,49 @@
+type Query {
+  users: [User!]!
+  posts: [Post!]!
+  comments: [Comment!]!
+  user(id: ID!): User
+  post(id: ID!): Post
+  comment(id: ID!): Comment
+  postsByUser(user_id: ID!): [Post!]!
+}
+
+type Mutation {
+  createUser(name: String!, email: String!): User
+  createPost(title: String!, user_id: ID!, body: String!): Post
+  createComment(post_id: ID!, user_id: ID!, body: String!): Comment
+  updateUser(id: ID!, name: String!, email: String!): User
+  updatePost(id: ID!, title: String!, user_id: ID!, body: String!): Post
+  updateComment(id: ID!, post_id: ID!, user_id: ID!, body: String!): Comment
+  deleteUser(id: ID!): User
+  deletePost(id: ID!): Post
+  deleteComment(id: ID!): Comment
+  reset: DatabaseResetResult
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  posts: [Post!]!
+}
+
+type Post {
+  id: ID!
+  user_id: ID!
+  title: String
+  body: String
+}
+
+type Comment {
+  id: ID!
+  post_id: ID!
+  user_id: ID!
+  body: String
+}
+
+type DatabaseResetResult {
+  users: [User!]!
+  posts: [Post!]!
+  comments: [Comment!]!
+}

@@ -1,0 +1,33 @@
+{
+  "name": "orion-demo-app-lambda",
+  "version": "1.0.0",
+  "description": "Lambda function for Orion demo app GraphQL API",
+  "type": "module",
+  "main": "dist/lambda-handler.js",
+  "scripts": {
+    "build": "npm run clean && npm run compile && npm run copy-static && npm run package",
+    "clean": "rm -rf dist build",
+    "compile": "tsc",
+    "copy-static": "mkdir -p dist/graphql dist/db/json && cp src/graphql/schema.graphql dist/graphql/ && cp src/db/json/*.json dist/db/json/",
+    "package": "npm run package:prepare && npm run package:zip",
+    "package:prepare": "rm -rf build && mkdir -p build && cp -r dist/* build/ && cp package.json build/ && cd build && npm install --omit=dev",
+    "package:zip": "cd build && zip -r ../lambda-function.zip . && cd .. && cp lambda-function.zip ../assets/",
+    "dev": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@codegenie/serverless-express": "^4.16.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "graphql": "^16.10.0",
+    "graphql-yoga": "^5.16.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.147",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
