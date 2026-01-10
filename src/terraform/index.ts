@@ -144,6 +144,9 @@ export async function terraformDestroy(awsConfig: DemoAppAwsConfig): Promise<voi
     return; // Nothing to destroy
   }
 
+  // Initialize Terraform first to ensure providers are available
+  await terraformInit();
+
   const env = getTerraformEnv(awsConfig);
   const stateArg = `-state=${DEMO_APP_TFSTATE_PATH}`;
   const regionVar = `-var=aws_region=${awsConfig.region}`;
