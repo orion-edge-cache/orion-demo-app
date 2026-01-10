@@ -3,7 +3,7 @@
  */
 
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2, Context } from 'aws-lambda';
-import { yoga } from './app.js';
+import { yoga } from './yoga.js';
 import { CURRENT_CONFIG } from './config.js';
 
 export const handler = async (
