@@ -1,5 +1,5 @@
 /**
- * Express application with GraphQL Yoga
+ * GraphQL Yoga instance and Express app for local development
  */
 
 import express from 'express';
@@ -10,7 +10,21 @@ import { CURRENT_CONFIG } from './config.js';
 
 export const PORT = CURRENT_CONFIG.port;
 
-// Initialize the Express app
+// Create GraphQL Yoga instance (used by both Lambda and Express)
+export const yoga = createYoga({
+  schema,
+  graphqlEndpoint: '/graphql',
+  parserAndValidationCache: false,
+  plugins: [
+    {
+      onExecute: () => {
+        console.log(`📡 GraphQL request in ${CURRENT_CONFIG.environment} environment`);
+      },
+    },
+  ],
+});
+
+// Express app for local development only
 export const app = express();
 app.use(express.json());
 app.use(
@@ -28,22 +42,6 @@ app.use('/', (req, res, next) => {
   console.log(`HEADERS: ${JSON.stringify(req.headers, null, 4)}`);
   console.log(`BODY: ${JSON.stringify(req.body, null, 4)}`);
   next();
-});
-
-// GraphQL Yoga setup
-const yoga = createYoga({
-  schema,
-  parserAndValidationCache: false,
-  plugins: [
-    {
-      onExecute: () => {
-        console.log(`📡 GraphQL request in ${CURRENT_CONFIG.environment} environment`);
-      },
-      onResultProcess: () => {
-        // A place to log info about post-graphql operations
-      },
-    },
-  ],
 });
 
 // Mount GraphQL endpoint
