@@ -2,62 +2,15 @@
  * Terraform operations for demo app deployment
  */
 
-import { spawn } from 'child_process';
 import fs from 'fs';
-import path from 'path';
 import {
   TERRAFORM_DIR,
   DEMO_APP_TFSTATE_PATH,
   ORION_CONFIG_DIR,
   LAMBDA_ZIP_PATH,
 } from '../config.js';
-import type { CommandResult, TerraformOutputs, DemoAppAwsConfig } from '../types.js';
-
-/**
- * Execute a command and return the result
- */
-function executeCommand(
-  command: string,
-  args: string[],
-  options: {
-    cwd?: string;
-    env?: NodeJS.ProcessEnv;
-    verbose?: boolean;
-  } = {}
-): Promise<CommandResult> {
-  return new Promise((resolve) => {
-    const proc = spawn(command, args, {
-      cwd: options.cwd,
-      env: { ...process.env, ...options.env },
-      shell: true,
-    });
-
-    let stdout = '';
-    let stderr = '';
-
-    proc.stdout.on('data', (data) => {
-      stdout += data.toString();
-      if (options.verbose) {
-        process.stdout.write(data);
-      }
-    });
-
-    proc.stderr.on('data', (data) => {
-      stderr += data.toString();
-      if (options.verbose) {
-        process.stderr.write(data);
-      }
-    });
-
-    proc.on('close', (code) => {
-      resolve({
-        code: code ?? 1,
-        stdout,
-        stderr,
-      });
-    });
-  });
-}
+import type { TerraformOutputs, DemoAppAwsConfig } from '../types.js';
+import { executeCommand } from '../utils/index.js';
 
 /**
  * Ensure the Orion config directory exists

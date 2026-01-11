@@ -2,7 +2,6 @@
  * Build operations for demo app client
  */
 
-import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import {
@@ -11,46 +10,7 @@ import {
   CLIENT_DIST_DIR,
   LAMBDA_ZIP_PATH,
 } from '../config.js';
-import type { CommandResult } from '../types.js';
-
-/**
- * Execute a command and return the result
- */
-function executeCommand(
-  command: string,
-  args: string[],
-  options: {
-    cwd?: string;
-    env?: NodeJS.ProcessEnv;
-  } = {}
-): Promise<CommandResult> {
-  return new Promise((resolve) => {
-    const proc = spawn(command, args, {
-      cwd: options.cwd,
-      env: { ...process.env, ...options.env },
-      shell: true,
-    });
-
-    let stdout = '';
-    let stderr = '';
-
-    proc.stdout.on('data', (data) => {
-      stdout += data.toString();
-    });
-
-    proc.stderr.on('data', (data) => {
-      stderr += data.toString();
-    });
-
-    proc.on('close', (code) => {
-      resolve({
-        code: code ?? 1,
-        stdout,
-        stderr,
-      });
-    });
-  });
-}
+import { executeCommand } from '../utils/index.js';
 
 /**
  * Copy directory recursively

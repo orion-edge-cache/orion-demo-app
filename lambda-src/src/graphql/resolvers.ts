@@ -141,28 +141,28 @@ export const resolvers = {
     // Get user by ID
     user: (_parent: unknown, { id }: { id: string }) => {
       const db = readDb();
-      const user = db.users.find((u) => u.id === id);
+      const user = db.users.find((user) => user.id === id);
       return user || null;
     },
 
     // Get post by ID
     post: (_parent: unknown, { id }: { id: string }) => {
       const db = readDb();
-      const post = db.posts.find((p) => p.id === id);
+      const post = db.posts.find((post) => post.id === id);
       return post || null;
     },
 
     // Get comment by ID
     comment: (_parent: unknown, { id }: { id: string }) => {
       const db = readDb();
-      const comment = db.comments.find((c) => c.id === id);
+      const comment = db.comments.find((comment) => comment.id === id);
       return comment || null;
     },
 
     // Get posts by user ID (manual filtering)
     postsByUser: (_parent: unknown, { user_id }: { user_id: string }) => {
       const db = readDb();
-      return db.posts.filter((p) => p.user_id === user_id);
+      return db.posts.filter((post) => post.user_id === user_id);
     },
   },
 
@@ -170,7 +170,7 @@ export const resolvers = {
     // Resolve posts for a user (manual filtering)
     posts: (parent: User) => {
       const db = readDb();
-      return db.posts.filter((p) => p.user_id === parent.id);
+      return db.posts.filter((post) => post.user_id === parent.id);
     },
   },
 
@@ -179,7 +179,7 @@ export const resolvers = {
     createUser: (_parent: unknown, { name, email }: { name: string; email: string }) => {
       const db = readDb();
       // Generate new ID (max existing ID + 1)
-      const maxId = db.users.reduce((max, u) => Math.max(max, parseInt(u.id, 10)), 0);
+      const maxId = db.users.reduce((max, user) => Math.max(max, parseInt(user.id, 10)), 0);
       const id = String(maxId + 1);
       const newUser: User = { id, name, email };
       db.users.push(newUser);
@@ -195,7 +195,7 @@ export const resolvers = {
     ) => {
       const db = readDb();
       // Generate new ID
-      const maxId = db.posts.reduce((max, p) => Math.max(max, parseInt(p.id, 10)), 0);
+      const maxId = db.posts.reduce((max, post) => Math.max(max, parseInt(post.id, 10)), 0);
       const id = String(maxId + 1);
       const newPost: Post = {
         id,
@@ -217,7 +217,7 @@ export const resolvers = {
     ) => {
       const db = readDb();
       // Generate new ID
-      const maxId = db.comments.reduce((max, c) => Math.max(max, parseInt(c.id, 10)), 0);
+      const maxId = db.comments.reduce((max, comment) => Math.max(max, parseInt(comment.id, 10)), 0);
       const id = String(maxId + 1);
       const newComment: Comment = { id, body, user_id, post_id };
       db.comments.push(newComment);
@@ -229,7 +229,7 @@ export const resolvers = {
     // Update an existing user
     updateUser: (_parent: unknown, { id, name, email }: { id: string; name: string; email: string }) => {
       const db = readDb();
-      const userIndex = db.users.findIndex((u) => u.id === id);
+      const userIndex = db.users.findIndex((user) => user.id === id);
       if (userIndex === -1) {
         console.log(`User not found: ${id}`);
         return null;
@@ -246,7 +246,7 @@ export const resolvers = {
       { id, title, user_id, body }: { id: string; title: string; user_id: string; body: string }
     ) => {
       const db = readDb();
-      const postIndex = db.posts.findIndex((p) => p.id === id);
+      const postIndex = db.posts.findIndex((post) => post.id === id);
       if (postIndex === -1) {
         console.log(`Post not found: ${id}`);
         return null;
@@ -271,7 +271,7 @@ export const resolvers = {
       { id, post_id, user_id, body }: { id: string; post_id: string; user_id: string; body: string }
     ) => {
       const db = readDb();
-      const commentIndex = db.comments.findIndex((c) => c.id === id);
+      const commentIndex = db.comments.findIndex((comment) => comment.id === id);
       if (commentIndex === -1) {
         console.log(`Comment not found: ${id}`);
         return null;
@@ -285,7 +285,7 @@ export const resolvers = {
     // Delete a user
     deleteUser: (_parent: unknown, { id }: { id: string }) => {
       const db = readDb();
-      const userIndex = db.users.findIndex((u) => u.id === id);
+      const userIndex = db.users.findIndex((user) => user.id === id);
       if (userIndex === -1) {
         console.log(`User not found: ${id}`);
         return null;
@@ -299,7 +299,7 @@ export const resolvers = {
     // Delete a post
     deletePost: (_parent: unknown, { id }: { id: string }) => {
       const db = readDb();
-      const postIndex = db.posts.findIndex((p) => p.id === id);
+      const postIndex = db.posts.findIndex((post) => post.id === id);
       if (postIndex === -1) {
         console.log(`Post not found: ${id}`);
         return null;
@@ -313,7 +313,7 @@ export const resolvers = {
     // Delete a comment
     deleteComment: (_parent: unknown, { id }: { id: string }) => {
       const db = readDb();
-      const commentIndex = db.comments.findIndex((c) => c.id === id);
+      const commentIndex = db.comments.findIndex((comment) => comment.id === id);
       if (commentIndex === -1) {
         console.log(`Comment not found: ${id}`);
         return null;
