@@ -45,12 +45,3 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
-
-// Error test endpoint (for testing 5xx error tracking)
-app.get('/error', (req, res) => {
-  res.status(500).json({
-    error: 'Test server error',
-    message: 'This is a deliberate 500 error for testing analytics error tracking',
-    timestamp: new Date().toISOString(),
-  });
-});
