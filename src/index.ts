@@ -12,6 +12,7 @@
 export { deployDemoApp } from './deploy.js';
 export { destroyDemoApp } from './destroy.js';
 export { getDemoAppStatus, checkDemoAppDeployed } from './status.js';
+export { getTerraformOutputs } from './terraform/index.js';
 
 // Types
 export type {
@@ -21,6 +22,7 @@ export type {
   DemoAppStatus,
   ProgressEvent,
   ProgressCallback,
+  TerraformOutputs,
 } from './types.js';
 
 // Paths (for consumers who need them)
