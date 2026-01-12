@@ -21,6 +21,19 @@ export const handler = async (event, context) => {
             }),
         };
     }
+    // Handle error test endpoint (for testing 5xx error tracking)
+    if (event.rawPath === '/error') {
+        console.log('Error test endpoint invoked');
+        return {
+            statusCode: 500,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                error: 'Test server error',
+                message: 'This is a deliberate 500 error for testing analytics error tracking',
+                timestamp: new Date().toISOString(),
+            }),
+        };
+    }
     try {
         // Build URL with query string
         const queryString = event.rawQueryString ? `?${event.rawQueryString}` : '';
