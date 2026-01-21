@@ -49,8 +49,6 @@ export function saveDemoAppOutputs(outputs: DemoAppOutputs): void {
     lambdaFunctionName: outputs.lambdaFunctionName,
     clientBucket: outputs.clientBucket,
     awsRegion: outputs.awsRegion,
-    cloudfrontUrl: outputs.cloudfrontUrl,
-    cloudfrontDistributionId: outputs.cloudfrontDistributionId,
     deployedAt: new Date().toISOString(),
   };
 
@@ -85,8 +83,6 @@ export function getDemoAppOutputs(): DemoAppOutputs | null {
     lambdaFunctionName: config.demoApp.lambdaFunctionName,
     clientBucket: config.demoApp.clientBucket,
     awsRegion: config.demoApp.awsRegion,
-    cloudfrontUrl: config.demoApp.cloudfrontUrl,
-    cloudfrontDistributionId: config.demoApp.cloudfrontDistributionId,
   };
 }
 

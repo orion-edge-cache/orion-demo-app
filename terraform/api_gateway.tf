@@ -6,7 +6,7 @@ resource "aws_apigatewayv2_api" "graphql" {
   cors_configuration {
     allow_origins = [
       "http://localhost:5173",
-      "https://${aws_cloudfront_distribution.client.domain_name}"
+      "http://${aws_s3_bucket.client.bucket}.s3-website-${var.aws_region}.amazonaws.com"
     ]
     allow_methods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     allow_headers = ["*"]
