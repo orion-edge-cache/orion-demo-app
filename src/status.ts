@@ -33,9 +33,7 @@ export async function getDemoAppStatus(): Promise<DemoAppStatus> {
       const tfOutputs = await getTerraformOutputs();
       outputs = {
         graphqlEndpoint: tfOutputs.graphql_endpoint,
-        s3WebsiteUrl: tfOutputs.s3_website_url,
         lambdaFunctionName: tfOutputs.lambda_function_name,
-        clientBucket: tfOutputs.client_bucket,
         awsRegion: tfOutputs.aws_region,
       };
     } catch {

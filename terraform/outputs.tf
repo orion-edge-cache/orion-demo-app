@@ -10,24 +10,6 @@ output "graphql_endpoint" {
   value       = "${aws_apigatewayv2_api.graphql.api_endpoint}/graphql"
 }
 
-# S3 static website endpoint
-output "s3_website_endpoint" {
-  description = "S3 static website endpoint"
-  value       = aws_s3_bucket_website_configuration.client.website_endpoint
-}
-
-# S3 static website full URL
-output "s3_website_url" {
-  description = "S3 static website URL"
-  value       = "http://${aws_s3_bucket.client.bucket}.s3-website-${var.aws_region}.amazonaws.com"
-}
-
-# Client bucket name
-output "client_bucket" {
-  description = "S3 bucket name for client files"
-  value       = aws_s3_bucket.client.id
-}
-
 # Lambda function name
 output "lambda_function_name" {
   description = "Lambda function name"

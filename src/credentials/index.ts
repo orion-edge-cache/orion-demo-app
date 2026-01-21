@@ -45,9 +45,7 @@ export function saveDemoAppOutputs(outputs: DemoAppOutputs): void {
 
   existing.demoApp = {
     graphqlEndpoint: outputs.graphqlEndpoint,
-    s3WebsiteUrl: outputs.s3WebsiteUrl,
     lambdaFunctionName: outputs.lambdaFunctionName,
-    clientBucket: outputs.clientBucket,
     awsRegion: outputs.awsRegion,
     deployedAt: new Date().toISOString(),
   };
@@ -79,9 +77,7 @@ export function getDemoAppOutputs(): DemoAppOutputs | null {
 
   return {
     graphqlEndpoint: config.demoApp.graphqlEndpoint,
-    s3WebsiteUrl: config.demoApp.s3WebsiteUrl,
     lambdaFunctionName: config.demoApp.lambdaFunctionName,
-    clientBucket: config.demoApp.clientBucket,
     awsRegion: config.demoApp.awsRegion,
   };
 }

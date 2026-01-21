@@ -17,7 +17,6 @@ export const PACKAGE_ROOT = path.resolve(__dirname, '..');
 // Assets paths
 export const ASSETS_DIR = path.join(PACKAGE_ROOT, 'assets');
 export const LAMBDA_ZIP_PATH = path.join(ASSETS_DIR, 'lambda-function.zip');
-export const CLIENT_SOURCE_DIR = path.join(ASSETS_DIR, 'client');
 
 // Lambda source paths
 export const LAMBDA_SRC_DIR = path.join(PACKAGE_ROOT, 'lambda-src');
@@ -30,6 +29,3 @@ export const ORION_CONFIG_DIR = path.join(os.homedir(), '.config', 'orion');
 export const DEPLOYMENT_CONFIG_PATH = path.join(ORION_CONFIG_DIR, 'deployment-config.json');
 export const DEMO_APP_TFSTATE_PATH = path.join(ORION_CONFIG_DIR, 'demo-app.tfstate');
 
-// Temporary build directory for client
-export const CLIENT_BUILD_DIR = path.join(ORION_CONFIG_DIR, 'demo-app-client-build');
-export const CLIENT_DIST_DIR = path.join(CLIENT_BUILD_DIR, 'dist');
