@@ -45,3 +45,21 @@ output "aws_region" {
   description = "AWS region"
   value       = var.aws_region
 }
+
+# CloudFront distribution domain
+output "cloudfront_domain" {
+  description = "CloudFront distribution domain name"
+  value       = aws_cloudfront_distribution.client.domain_name
+}
+
+# CloudFront distribution URL
+output "cloudfront_url" {
+  description = "CloudFront distribution URL"
+  value       = "https://${aws_cloudfront_distribution.client.domain_name}"
+}
+
+# CloudFront distribution ID
+output "cloudfront_distribution_id" {
+  description = "CloudFront distribution ID"
+  value       = aws_cloudfront_distribution.client.id
+}

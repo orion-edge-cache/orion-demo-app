@@ -19,6 +19,8 @@ export interface DemoAppOutputs {
   lambdaFunctionName: string;
   clientBucket: string;
   awsRegion: string;
+  cloudfrontUrl: string;
+  cloudfrontDistributionId: string;
 }
 
 export interface DemoAppStatus {
@@ -45,6 +47,9 @@ export interface TerraformOutputs {
   lambda_function_name: string;
   lambda_function_arn: string;
   aws_region: string;
+  cloudfront_domain: string;
+  cloudfront_url: string;
+  cloudfront_distribution_id: string;
 }
 
 export interface SavedCredentials {
@@ -62,6 +67,8 @@ export interface SavedCredentials {
     lambdaFunctionName: string;
     clientBucket: string;
     awsRegion: string;
+    cloudfrontUrl: string;
+    cloudfrontDistributionId: string;
     deployedAt: string;
   };
   savedAt: string;
