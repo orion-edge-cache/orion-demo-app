@@ -37,6 +37,8 @@ export async function getDemoAppStatus(): Promise<DemoAppStatus> {
         lambdaFunctionName: tfOutputs.lambda_function_name,
         clientBucket: tfOutputs.client_bucket,
         awsRegion: tfOutputs.aws_region,
+        cloudfrontUrl: tfOutputs.cloudfront_url,
+        cloudfrontDistributionId: tfOutputs.cloudfront_distribution_id,
       };
     } catch {
       // State might be corrupted
