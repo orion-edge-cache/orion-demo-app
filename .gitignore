@@ -37,4 +37,5 @@ build/
 lambda-function.zip
 tests/
 
-src/tests/fixtures/deployment-config.json
+**/fixtures/**/*.json
+**/deployment-config.json
