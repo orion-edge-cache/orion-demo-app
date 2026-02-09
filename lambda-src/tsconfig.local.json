@@ -15,6 +15,6 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": ["src/lambda-handler.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "build"]
 }
