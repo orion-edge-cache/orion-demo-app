@@ -32,3 +32,6 @@ lambda-src/node_modules/
 
 # Don't ignore pre-built client assets
 !assets/client/
+
+build/
+lambda-function.zip
