@@ -6,8 +6,10 @@
   "main": "dist/lambda-handler.js",
   "scripts": {
     "build": "npm run clean && npm run compile && npm run copy-static && npm run package",
+    "build:local": "npm run clean && npm run compile:local && npm run copy-static && npm run package",
     "clean": "rm -rf dist build lambda-function.zip ../assets/lambda-function.zip",
     "compile": "tsc",
+    "compile:local": "tsc -p tsconfig.local.json",
     "copy-static": "mkdir -p dist/graphql dist/db/json && cp src/graphql/schema.graphql dist/graphql/ && cp src/db/json/*.json dist/db/json/",
     "package": "npm run package:prepare && npm run package:zip",
     "package:prepare": "rm -rf build && mkdir -p build && cp -r dist/* build/ && cp package.json build/ && cd build && npm install --omit=dev",
