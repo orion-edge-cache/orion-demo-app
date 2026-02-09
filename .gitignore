@@ -35,3 +35,6 @@ lambda-src/node_modules/
 
 build/
 lambda-function.zip
+tests/
+
+src/tests/fixtures/deployment-config.json
